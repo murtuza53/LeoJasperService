@@ -5,7 +5,10 @@
       "Bash(grep -E \"\\\\.\\(jar|zip|class\\)$\")",
       "Bash(git checkout *)",
       "Bash(git rm *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }
