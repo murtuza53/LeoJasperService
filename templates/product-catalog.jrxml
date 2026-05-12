@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="product-catalog" pageWidth="595" pageHeight="842"
+              columnWidth="260" columnCount="2" columnSpacing="15"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30"
+              printOrder="Vertical">
+
+    <field name="sku"      class="java.lang.String"/>
+    <field name="name"     class="java.lang.String"/>
+    <field name="category" class="java.lang.String"/>
+    <field name="price"    class="java.lang.Double"/>
+    <field name="stock"    class="java.lang.Integer"/>
+
+    <title>
+        <band height="40">
+            <staticText>
+                <reportElement x="0" y="0" width="535" height="30"/>
+                <textElement><font size="20" isBold="true"/></textElement>
+                <text><![CDATA[Product Catalog]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <detail>
+        <band height="60">
+            <rectangle radius="6">
+                <reportElement x="0" y="2" width="260" height="55" forecolor="#CCCCCC"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
+            </rectangle>
+            <textField>
+                <reportElement x="8" y="6" width="244" height="16"/>
+                <textElement><font size="12" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="8" y="22" width="160" height="12"/>
+                <textElement><font size="9" isItalic="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{category} + " · SKU " + $F{sku}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="170" y="22" width="82" height="14"/>
+                <textElement textAlignment="Right"><font size="11" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="8" y="38" width="244" height="14"/>
+                <textElement><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{stock} > 0 ? "In stock: " + $F{stock} : "Out of stock"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

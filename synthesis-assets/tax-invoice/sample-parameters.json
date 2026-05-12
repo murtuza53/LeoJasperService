@@ -1,0 +1,21 @@
+{
+  "INVOICE_NUMBER" : "INV-2024-00892",
+  "INVOICE_DATE" : "24 Oct 2023",
+  "TRN_NUMBER" : "100342981100003",
+  "SENDER_COMPANY_NAME" : "Maimoon Trading Company W.L.L",
+  "SENDER_ADDRESS" : "Office 402, Building 832, Road 12\nDiplomatic Area, Manama, Bahrain",
+  "SENDER_CR" : "CR: 12938-1",
+  "CUSTOMER_COMPANY_NAME" : "Al-Futtaim Logistics",
+  "CUSTOMER_ADDRESS" : "Warehouse 14, Hidd Industrial Area\nKingdom of Bahrain",
+  "CUSTOMER_TRN" : "TRN: 20003928100003",
+  "PAYMENT_TERM_1" : "• Net 30 days from invoice date.",
+  "PAYMENT_TERM_2" : "• Please include Invoice No. in payment reference.",
+  "PAYMENT_TERM_3" : "• All bank charges are to be borne by the remitter.",
+  "BANK_NAME" : "Bank: Bank of Bahrain and Kuwait (BBK)",
+  "BANK_ACCOUNT_NAME" : "Account Name: Maimoon Trading Company W.L.L",
+  "BANK_IBAN" : "IBAN: BH21 BBKB 0000 0012 9381 02",
+  "SUBTOTAL" : 1095.0,
+  "TOTAL_VAT" : 109.5,
+  "GRAND_TOTAL" : 1204.5,
+  "AMOUNT_IN_WORDS" : "Amount in Words: One Thousand Two Hundred and Four Bahraini Dinars and Five Hundred Fils Only."
+}

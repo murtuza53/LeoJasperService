@@ -1,0 +1,15 @@
+[
+  {"region": "East",  "salesperson": "Alice Chen",   "product": "Widget Pro",  "units": 24, "revenue":  7200.00},
+  {"region": "East",  "salesperson": "Alice Chen",   "product": "Widget Lite", "units": 40, "revenue":  4000.00},
+  {"region": "East",  "salesperson": "Bob Diaz",     "product": "Widget Pro",  "units": 12, "revenue":  3600.00},
+  {"region": "East",  "salesperson": "Bob Diaz",     "product": "Gadget X",    "units":  8, "revenue":  2000.00},
+  {"region": "North", "salesperson": "Carol Smith",  "product": "Gadget X",    "units": 50, "revenue": 12500.00},
+  {"region": "North", "salesperson": "Carol Smith",  "product": "Widget Pro",  "units": 18, "revenue":  5400.00},
+  {"region": "North", "salesperson": "Henry Wong",   "product": "Widget Lite", "units": 30, "revenue":  3000.00},
+  {"region": "South", "salesperson": "David Jones",  "product": "Widget Lite", "units": 80, "revenue":  8000.00},
+  {"region": "South", "salesperson": "David Jones",  "product": "Gadget X",    "units": 22, "revenue":  5500.00},
+  {"region": "South", "salesperson": "Iris Patel",   "product": "Widget Pro",  "units": 14, "revenue":  4200.00},
+  {"region": "West",  "salesperson": "Eve Brown",    "product": "Gadget X",    "units": 35, "revenue":  8750.00},
+  {"region": "West",  "salesperson": "Eve Brown",    "product": "Widget Pro",  "units": 15, "revenue":  4500.00},
+  {"region": "West",  "salesperson": "Frank Miller", "product": "Widget Lite", "units": 60, "revenue":  6000.00}
+]

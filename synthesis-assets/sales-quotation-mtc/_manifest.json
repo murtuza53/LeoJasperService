@@ -1,0 +1,1324 @@
+{
+  "templateId" : "sales-quotation-mtc",
+  "createdAt" : "2026-05-09T13:46:28.492665700Z",
+  "analyzer" : "gemini:gemini-2.5-flash",
+  "model" : {
+    "title" : "Sales Quotation",
+    "page" : {
+      "width" : 595,
+      "height" : 842,
+      "leftMargin" : 30,
+      "rightMargin" : 30,
+      "topMargin" : 30,
+      "bottomMargin" : 30
+    },
+    "parameters" : [ {
+      "name" : "CUSTOMER_CODE",
+      "type" : "java.lang.String",
+      "description" : "Customer Code",
+      "sampleValue" : "C0776"
+    }, {
+      "name" : "CUSTOMER_ACCOUNT",
+      "type" : "java.lang.String",
+      "description" : "Customer Account Name",
+      "sampleValue" : "MANAR AL OMRAN SCAFFOLDINGS W.L.L"
+    }, {
+      "name" : "CUSTOMER_ADDRESS",
+      "type" : "java.lang.String",
+      "description" : "Customer Address",
+      "sampleValue" : "Flat-101 Building-657 Road-2811 Block-428 Seef Area"
+    }, {
+      "name" : "CUSTOMER_TRN",
+      "type" : "java.lang.String",
+      "description" : "Customer TRN",
+      "sampleValue" : "200020056400002"
+    }, {
+      "name" : "ATTENTION_TO",
+      "type" : "java.lang.String",
+      "description" : "Attention To",
+      "sampleValue" : ""
+    }, {
+      "name" : "TRN_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Quotation TRN Number",
+      "sampleValue" : "200011201700002"
+    }, {
+      "name" : "QUOTE_DATE",
+      "type" : "java.lang.String",
+      "description" : "Quotation Date",
+      "sampleValue" : "05/05/2026"
+    }, {
+      "name" : "QUOTE_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Quotation Number",
+      "sampleValue" : "QTN-26-00628"
+    }, {
+      "name" : "REFERENCE_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Reference Number",
+      "sampleValue" : ""
+    }, {
+      "name" : "LPO_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "LPO Number",
+      "sampleValue" : ""
+    }, {
+      "name" : "CURRENCY",
+      "type" : "java.lang.String",
+      "description" : "Currency",
+      "sampleValue" : "BD"
+    }, {
+      "name" : "PAGE_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Page Number",
+      "sampleValue" : "PageNo 1 of 1"
+    }, {
+      "name" : "AMOUNT_IN_WORDS",
+      "type" : "java.lang.String",
+      "description" : "Total amount in words",
+      "sampleValue" : "BD TWO HUNDRED FORTY-NINE AND 370 FILS ONLY"
+    }, {
+      "name" : "VALIDITY",
+      "type" : "java.lang.String",
+      "description" : "Terms & Conditions - Validity",
+      "sampleValue" : ""
+    }, {
+      "name" : "PAY_TERMS",
+      "type" : "java.lang.String",
+      "description" : "Terms & Conditions - Pay Terms",
+      "sampleValue" : ""
+    }, {
+      "name" : "REMARKS",
+      "type" : "java.lang.String",
+      "description" : "Terms & Conditions - Remarks",
+      "sampleValue" : ""
+    }, {
+      "name" : "SUB_TOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Sub Total amount",
+      "sampleValue" : "226.700"
+    }, {
+      "name" : "TOTAL_DISCOUNT",
+      "type" : "java.lang.Double",
+      "description" : "Total Discount amount",
+      "sampleValue" : "0.000"
+    }, {
+      "name" : "AMOUNT_EXC_VAT_TOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Total Amount Excluding VAT",
+      "sampleValue" : "226.700"
+    }, {
+      "name" : "VAT_AMOUNT_TOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Total VAT Amount",
+      "sampleValue" : "22.670"
+    }, {
+      "name" : "AMOUNT_INC_VAT_TOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Total Amount Including VAT",
+      "sampleValue" : "249.370"
+    }, {
+      "name" : "CREATED_BY",
+      "type" : "java.lang.String",
+      "description" : "Document created by",
+      "sampleValue" : "AKIL"
+    }, {
+      "name" : "CREATED_ON",
+      "type" : "java.lang.String",
+      "description" : "Document created on date/time",
+      "sampleValue" : "05/05/2026 2:57:39 PM"
+    }, {
+      "name" : "APPROVED_BY",
+      "type" : "java.lang.String",
+      "description" : "Document approved by",
+      "sampleValue" : ""
+    }, {
+      "name" : "APPROVED_ON",
+      "type" : "java.lang.String",
+      "description" : "Document approved on date/time",
+      "sampleValue" : ""
+    }, {
+      "name" : "PRINTED_BY_INFO",
+      "type" : "java.lang.String",
+      "description" : "Printed by information",
+      "sampleValue" : "Printed By Murtuza, 07-May-2026 11:49:09"
+    }, {
+      "name" : "ELECTRONIC_APPROVAL_NOTE",
+      "type" : "java.lang.String",
+      "description" : "Note about electronic approval",
+      "sampleValue" : "This is an Electronically Approved Document & does not require a Signature"
+    } ],
+    "fields" : [ {
+      "name" : "s_no",
+      "type" : "java.lang.Integer",
+      "description" : "Serial Number",
+      "sampleValue" : "1"
+    }, {
+      "name" : "description",
+      "type" : "java.lang.String",
+      "description" : "Line item description",
+      "sampleValue" : "Silicon Black"
+    }, {
+      "name" : "quantity",
+      "type" : "java.lang.Integer",
+      "description" : "Quantity of item",
+      "sampleValue" : "5"
+    }, {
+      "name" : "unit",
+      "type" : "java.lang.String",
+      "description" : "Unit of measure",
+      "sampleValue" : "CTN"
+    }, {
+      "name" : "unit_price",
+      "type" : "java.lang.Double",
+      "description" : "Unit price",
+      "sampleValue" : "10.500"
+    }, {
+      "name" : "discount",
+      "type" : "java.lang.Double",
+      "description" : "Discount per item",
+      "sampleValue" : "0.000"
+    }, {
+      "name" : "amount_exc_vat",
+      "type" : "java.lang.Double",
+      "description" : "Amount excluding VAT",
+      "sampleValue" : "52.500"
+    }, {
+      "name" : "vat_percentage",
+      "type" : "java.lang.String",
+      "description" : "VAT percentage",
+      "sampleValue" : "10 %"
+    }, {
+      "name" : "amount_inc_vat",
+      "type" : "java.lang.Double",
+      "description" : "Amount including VAT",
+      "sampleValue" : "57.750"
+    } ],
+    "regions" : [ {
+      "band" : "TITLE",
+      "x" : 0,
+      "y" : 0,
+      "width" : 535,
+      "height" : 60,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "background" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 10,
+      "y" : 5,
+      "width" : 80,
+      "height" : 50,
+      "element" : {
+        "type" : "image",
+        "assetRef" : "MTC_LOGO",
+        "style" : { }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 100,
+      "y" : 5,
+      "width" : 200,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "شركة ميمون التجارية ذ م م",
+        "style" : {
+          "fontSize" : 12,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 100,
+      "y" : 25,
+      "width" : 200,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "MAIMOON TRADING COMPANY WLL",
+        "style" : {
+          "fontSize" : 12,
+          "bold" : true,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 100,
+      "y" : 45,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "CR: 52533-01,03",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 5,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "+973 1727 7349",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 18,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "+973 3828 5152",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 31,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "info@maimoontrading.com",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 44,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "www.maimoontrading.com",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 57,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Building 165, Road/Street 336",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 70,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Town Manama, Block 303, Bahrain",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 350,
+      "y" : 83,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "200011201700002",
+        "style" : {
+          "fontSize" : 9,
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 480,
+      "y" : 5,
+      "width" : 50,
+      "height" : 50,
+      "element" : {
+        "type" : "image",
+        "assetRef" : "QR_CODE",
+        "style" : { }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 480,
+      "y" : 55,
+      "width" : 50,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Location",
+        "style" : {
+          "fontSize" : 8,
+          "alignment" : "Center",
+          "color" : "#FFFFFF"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 0,
+      "y" : 0,
+      "width" : 535,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "SALES QUOTATION",
+        "style" : {
+          "fontSize" : 16,
+          "bold" : true,
+          "alignment" : "Center"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 0,
+      "y" : 30,
+      "width" : 260,
+      "height" : 120,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 5,
+      "y" : 35,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Customer Code :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 90,
+      "y" : 35,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_CODE}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 5,
+      "y" : 50,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Customer A/C :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 90,
+      "y" : 50,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_ACCOUNT}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 5,
+      "y" : 65,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Address :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 90,
+      "y" : 65,
+      "width" : 165,
+      "height" : 30,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_ADDRESS}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 5,
+      "y" : 95,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Customer TRN :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 90,
+      "y" : 95,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_TRN}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 5,
+      "y" : 110,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Attention To :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 90,
+      "y" : 110,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{ATTENTION_TO}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 275,
+      "y" : 30,
+      "width" : 260,
+      "height" : 120,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 35,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "TRN No :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 35,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{TRN_NUMBER}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 50,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Quote Date :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 50,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{QUOTE_DATE}",
+        "pattern" : "dd/MM/yyyy",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 65,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Quote No :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 65,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{QUOTE_NUMBER}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 80,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Ref No :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 80,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{REFERENCE_NUMBER}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 95,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "LPO No :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 95,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{LPO_NUMBER}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 110,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Currency :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 110,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CURRENCY}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 280,
+      "y" : 125,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Page No :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 365,
+      "y" : 125,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PAGE_NUMBER}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 0,
+      "width" : 260,
+      "height" : 40,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 5,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Amount In Words:",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 20,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{AMOUNT_IN_WORDS}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 275,
+      "y" : 0,
+      "width" : 260,
+      "height" : 100,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 280,
+      "y" : 5,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Sub Total :",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 365,
+      "y" : 5,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{SUB_TOTAL}",
+        "pattern" : "$#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right",
+          "background" : "#F4F6F9"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 280,
+      "y" : 20,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Discount :",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 365,
+      "y" : 20,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{TOTAL_DISCOUNT}",
+        "pattern" : "$#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right",
+          "background" : "#F4F6F9"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 280,
+      "y" : 35,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Amount Exc.VAT :",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 365,
+      "y" : 35,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{AMOUNT_EXC_VAT_TOTAL}",
+        "pattern" : "$#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right",
+          "background" : "#F4F6F9"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 280,
+      "y" : 50,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Vat Amount :",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 365,
+      "y" : 50,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{VAT_AMOUNT_TOTAL}",
+        "pattern" : "$#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right",
+          "background" : "#F4F6F9"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 280,
+      "y" : 65,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Amount Inc.VAT :",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 365,
+      "y" : 65,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{AMOUNT_INC_VAT_TOTAL}",
+        "pattern" : "$#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Right",
+          "background" : "#F4F6F9"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 50,
+      "width" : 260,
+      "height" : 80,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 55,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Terms & Conditions:",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 70,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Validity :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 90,
+      "y" : 70,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{VALIDITY}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 85,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Pay Terms :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 90,
+      "y" : 85,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PAY_TERMS}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 100,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Remarks :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 90,
+      "y" : 100,
+      "width" : 165,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{REMARKS}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 140,
+      "width" : 535,
+      "height" : 80,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 145,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Created By :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 90,
+      "y" : 145,
+      "width" : 170,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CREATED_BY}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 5,
+      "y" : 160,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Created On :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 90,
+      "y" : 160,
+      "width" : 170,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CREATED_ON}",
+        "pattern" : "dd/MM/yyyy h:mm:ss a",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 270,
+      "y" : 145,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Approved By :",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 355,
+      "y" : 145,
+      "width" : 170,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{APPROVED_BY}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 270,
+      "y" : 160,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Approved On:",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 355,
+      "y" : 160,
+      "width" : 170,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{APPROVED_ON}",
+        "pattern" : "dd/MM/yyyy h:mm:ss a",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 270,
+      "y" : 180,
+      "width" : 260,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PRINTED_BY_INFO}",
+        "style" : {
+          "fontSize" : 9
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 270,
+      "y" : 195,
+      "width" : 260,
+      "height" : 30,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{ELECTRONIC_APPROVAL_NOTE}",
+        "style" : {
+          "fontSize" : 8,
+          "italic" : true
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 267,
+      "y" : 140,
+      "width" : 0,
+      "height" : 45,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 175,
+      "width" : 535,
+      "height" : 0,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "borderWidth" : 0.5,
+          "borderColor" : "#000000",
+          "borderSides" : "bottom"
+        }
+      }
+    }, {
+      "band" : "PAGE_FOOTER",
+      "x" : 0,
+      "y" : 0,
+      "width" : 535,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "",
+        "style" : {
+          "background" : "#1F3A5F"
+        }
+      }
+    } ],
+    "tableColumns" : [ {
+      "name" : "s_no",
+      "header" : "S.No",
+      "x" : 0,
+      "width" : 25,
+      "alignment" : "Center"
+    }, {
+      "name" : "description",
+      "header" : "Description",
+      "x" : 25,
+      "width" : 190,
+      "alignment" : "Left"
+    }, {
+      "name" : "quantity",
+      "header" : "Quantity",
+      "x" : 215,
+      "width" : 45,
+      "alignment" : "Right"
+    }, {
+      "name" : "unit",
+      "header" : "Unit",
+      "x" : 260,
+      "width" : 35,
+      "alignment" : "Center"
+    }, {
+      "name" : "unit_price",
+      "header" : "U. Price",
+      "x" : 295,
+      "width" : 55,
+      "alignment" : "Right",
+      "pattern" : "$#,##0.00"
+    }, {
+      "name" : "discount",
+      "header" : "Disc",
+      "x" : 350,
+      "width" : 45,
+      "alignment" : "Right",
+      "pattern" : "$#,##0.00"
+    }, {
+      "name" : "amount_exc_vat",
+      "header" : "Amt Exc VAT",
+      "x" : 395,
+      "width" : 60,
+      "alignment" : "Right",
+      "pattern" : "$#,##0.00"
+    }, {
+      "name" : "vat_percentage",
+      "header" : "Vat %",
+      "x" : 455,
+      "width" : 40,
+      "alignment" : "Center"
+    }, {
+      "name" : "amount_inc_vat",
+      "header" : "Amt Inc. VAT",
+      "x" : 495,
+      "width" : 40,
+      "alignment" : "Right",
+      "pattern" : "$#,##0.00"
+    } ],
+    "tableStyle" : {
+      "cellBorderWidth" : 0.5,
+      "cellBorderColor" : "#BBBBBB",
+      "cellBorderSides" : "bottom",
+      "headerBorderWidth" : 0.5,
+      "headerBorderColor" : "#000000",
+      "headerBorderSides" : "top,right,bottom,left",
+      "headerBackground" : "#F4F6F9",
+      "headerForeground" : "#000000"
+    },
+    "assets" : [ {
+      "name" : "MTC_LOGO"
+    }, {
+      "name" : "QR_CODE"
+    } ]
+  }
+}

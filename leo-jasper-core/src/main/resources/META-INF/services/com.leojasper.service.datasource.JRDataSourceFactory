@@ -1,0 +1,6 @@
+com.leojasper.service.datasource.JsonDataSourceFactory
+com.leojasper.service.datasource.XmlDataSourceFactory
+com.leojasper.service.datasource.CsvDataSourceFactory
+com.leojasper.service.datasource.SqlDataSourceFactory
+com.leojasper.service.datasource.BeansDataSourceFactory
+com.leojasper.service.datasource.RawDataSourceFactory

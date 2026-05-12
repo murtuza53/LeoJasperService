@@ -1,0 +1,36 @@
+{
+  "parameters": {
+    "document.number": "SQ-2026-0001",
+    "document.type": "SALES QUOTATION",
+    "document.date": "26/04/2026",
+    "document.dueDate": "11/05/2026",
+    "document.currency": "BHD",
+    "document.refNo": "REF-001",
+    "document.lpoNo": "LPO-9921",
+    "document.payTerms": "Chq",
+    "document.notes": "Smoke test render",
+    "customer.code": "C0002",
+    "customer.account": "Customer 2",
+    "customer.address": "Manama, Bahrain",
+    "customer.trn": "200099000700001",
+    "customer.attentionTo": "Mr Procurement",
+    "totals.subTotal": 46.0,
+    "totals.discount": 0.0,
+    "totals.amountExcVat": 46.0,
+    "totals.vatAmount": 4.6,
+    "totals.grandTotal": 50.6,
+    "totals.spelledAmountGrandTotal": "BHD FIFTY AND 600 FILS ONLY",
+    "audit.createdBy": "alice",
+    "audit.createdOn": "10/05/2026 11:00:00 AM",
+    "audit.approvedBy": "bob",
+    "audit.approvedOn": "10/05/2026 11:30:00 AM",
+    "audit.printedBy": "leojasper"
+  },
+  "data": [
+    {"lineNumber":1, "description":"HIGH ANKLE SAFETY SHOES BLACK 40 SIZE", "unit":"Prs", "qty":2, "unitPrice":5.0,  "discountPct":0.0, "netAmount":10.0, "vatPct":"10%", "totalIncVat":11.0},
+    {"lineNumber":2, "description":"HIGH ANKLE SAFETY SHOES BLACK 41 SIZE", "unit":"Prs", "qty":2, "unitPrice":3.0,  "discountPct":0.0, "netAmount":6.0,  "vatPct":"10%", "totalIncVat":6.6},
+    {"lineNumber":3, "description":"AUGAR DRILL BIT 16X450MM",              "unit":"Nos", "qty":5, "unitPrice":1.0,  "discountPct":0.0, "netAmount":5.0,  "vatPct":"10%", "totalIncVat":5.5},
+    {"lineNumber":4, "description":"AUGAR DRILL BIT 20X450MM",              "unit":"Nos", "qty":5, "unitPrice":2.0,  "discountPct":0.0, "netAmount":10.0, "vatPct":"10%", "totalIncVat":11.0},
+    {"lineNumber":5, "description":"AUGAR DRILL BIT 25X450MM",              "unit":"Nos", "qty":5, "unitPrice":3.0,  "discountPct":0.0, "netAmount":15.0, "vatPct":"10%", "totalIncVat":16.5}
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parameters": {
+    "document.number": "SQ-2026-0001",
+    "document.date":   "26/04/2026",
+    "document.dueDate":"11/05/2026",
+    "document.currency":"BHD",
+    "document.refNo":  "",
+    "document.lpoNo":  "",
+    "document.payTerms":"Chq",
+    "document.notes":  "",
+    "customer.code":   "C0002",
+    "customer.account":"Customer 2",
+    "customer.address":"",
+    "customer.trn":    "",
+    "customer.attentionTo":"",
+    "totals.subTotal":      46.000,
+    "totals.discount":      0.0000000000000000000000000000,
+    "totals.amountExcVat":  46.000,
+    "totals.vatAmount":     4.600,
+    "totals.grandTotal":    50.600,
+    "totals.spelledAmountGrandTotal":"BHD FIFTY AND 600 FILS ONLY",
+    "audit.createdBy":  "",
+    "audit.createdOn":  "01/01/0001 12:00 AM",
+    "audit.approvedBy": "",
+    "audit.approvedOn": "04/05/2026 8:30 AM",
+    "audit.printedBy":  ""
+  },
+  "data": [
+    {"lineNumber":1,"description":"HIGH ANKLE SAFETY SHOES BLACK 40 SIZE","unit":"Prs","qty":2,"unitPrice":5.0,"discountPct":0.0,"netAmount":10.0,"vatPct":"10%","totalIncVat":11.0},
+    {"lineNumber":2,"description":"HIGH ANKLE SAFETY SHOES BLACK 41 SIZE","unit":"Prs","qty":2,"unitPrice":3.0,"discountPct":0.0,"netAmount":6.0, "vatPct":"10%","totalIncVat":6.6},
+    {"lineNumber":3,"description":"AUGAR DRILL BIT 16X450MM",            "unit":"Nos","qty":5,"unitPrice":1.0,"discountPct":0.0,"netAmount":5.0, "vatPct":"10%","totalIncVat":5.5},
+    {"lineNumber":4,"description":"AUGAR DRILL BIT 20X450MM",            "unit":"Nos","qty":5,"unitPrice":2.0,"discountPct":0.0,"netAmount":10.0,"vatPct":"10%","totalIncVat":11.0},
+    {"lineNumber":5,"description":"AUGAR DRILL BIT 25X450MM",            "unit":"Nos","qty":5,"unitPrice":3.0,"discountPct":0.0,"netAmount":15.0,"vatPct":"10%","totalIncVat":16.5}
+  ]
+}

@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoJasperService — API client integration guide</title>
+<meta name="description" content="LeoJasperService API. POST /api/reports/render with multipart form-data (templateId, data, inputFormat, outputFormat, parameters) returns report bytes. Async via /api/reports/render-async + /api/reports/jobs/{id}. Templates managed at /api/templates. CORS open. Input formats: json, xml, csv. Output formats: pdf, xlsx, xls, html, png, png-zip, docx, odt, rtf, csv, text, pptx.">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📘</text></svg>">
+
+<style>
+  :root {
+    --fg: #1a1a1a;
+    --muted: #6a6a6a;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --border: #e2e2e2;
+    --accent: #0066cc;
+    --accent-hover: #0052a3;
+    --code-bg: #1d2025;
+    --code-fg: #e8e8ec;
+    --code-comment: #8b94a3;
+    --pill-bg: #ececf2;
+    --ok-bg: #e8f5ec;
+    --ok-fg: #1f7a3a;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg); background: var(--bg);
+  }
+  header {
+    padding: 22px 32px; background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  h1 { font-size: 22px; margin: 0; font-weight: 600; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  a.button, button.button {
+    padding: 8px 14px; border-radius: 7px; border: 1px solid var(--border);
+    background: #fff; color: var(--fg); text-decoration: none;
+    font: inherit; font-size: 13px; cursor: pointer;
+    display: inline-flex; gap: 6px; align-items: center;
+  }
+  a.button:hover, button.button:hover { background: #f4f4f7; }
+  a.button.primary, button.button.primary {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+  a.button.primary:hover, button.button.primary:hover {
+    background: var(--accent-hover); border-color: var(--accent-hover);
+  }
+  main {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 32px;
+    padding: 28px 32px;
+    max-width: 1280px; margin: 0 auto;
+  }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; } nav.toc { position: static !important; } }
+  nav.toc {
+    position: sticky; top: 24px; align-self: start;
+    font-size: 13px;
+  }
+  nav.toc ul { list-style: none; padding: 0; margin: 0; }
+  nav.toc li { margin: 4px 0; }
+  nav.toc a { color: var(--muted); text-decoration: none; display: block;
+              padding: 4px 8px; border-radius: 4px; }
+  nav.toc a:hover { color: var(--fg); background: #ececf2; }
+  nav.toc a.section { font-weight: 600; color: var(--fg); margin-top: 14px; }
+  article { min-width: 0; }
+  section.card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 26px 28px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  h2 { font-size: 19px; margin: 0 0 14px; }
+  h2 .anchor {
+    color: var(--muted); font-weight: 400; font-size: 14px;
+    margin-left: 8px; text-decoration: none;
+  }
+  h2 .anchor:hover { color: var(--accent); }
+  h3 { font-size: 15px; margin: 22px 0 10px; }
+  p { margin: 8px 0; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+         font-size: 13px; background: #f4f4f7; padding: 1px 5px; border-radius: 3px; }
+  pre {
+    background: var(--code-bg); color: var(--code-fg);
+    padding: 14px 16px; border-radius: 8px; overflow: auto;
+    font: 13px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    margin: 0;
+  }
+  .code-block { position: relative; margin: 8px 0 16px; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    padding: 4px 10px; border-radius: 5px; border: 1px solid #3a3f48;
+    background: rgba(255,255,255,.05); color: #c7cad1;
+    font: inherit; font-size: 12px; cursor: pointer;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .copy-btn.copied { background: var(--ok-fg); color: #fff; border-color: var(--ok-fg); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { background: #f9f9fb; font-weight: 600; font-size: 13px; }
+  ul.kv { padding-left: 18px; }
+  ul.kv li { margin: 4px 0; }
+  .tabs {
+    display: flex; gap: 4px; border-bottom: 1px solid var(--border);
+    overflow-x: auto; margin: 0 -2px 14px;
+  }
+  .tab {
+    padding: 8px 14px; background: transparent; border: none; cursor: pointer;
+    font: inherit; font-size: 13px; color: var(--muted);
+    border-bottom: 2px solid transparent; white-space: nowrap;
+  }
+  .tab:hover { color: var(--fg); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .pane { display: none; }
+  .pane.active { display: block; }
+  .pill {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 999px; background: var(--pill-bg); color: var(--fg);
+    margin-left: 4px;
+  }
+  .ai-banner {
+    background: linear-gradient(135deg, #f3f8ff 0%, #e8f0ff 100%);
+    border: 1px solid #cde0ff;
+  }
+  .ai-banner h2 { color: #1e3a8a; }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 18px; background: var(--ok-fg); color: #fff;
+    border-radius: 8px; box-shadow: var(--shadow);
+    font-size: 14px; opacity: 0; transition: opacity .25s;
+    pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📘 LeoJasperService — client integration</h1>
+    <p>Copy-pasteable snippets for every popular client + a contract block for AI assistants.</p>
+  </div>
+  <div class="header-actions">
+    <a class="button" href="/license.html">🔑 License</a>
+    <a class="button" href="/assets.html">📁 Assets</a>
+    <a class="button" href="/">📄 Tester</a>
+    <a class="button" href="/synthesis.html">✨ Synthesis</a>
+    <button class="button primary" id="copyAi">📋 Copy AI contract (markdown)</button>
+  </div>
+</header>
+
+<main>
+
+<nav class="toc">
+  <ul>
+    <li><a class="section" href="#ai">For AI assistants</a></li>
+    <li><a class="section" href="#auth">Authentication</a></li>
+    <li><a class="section" href="#endpoints">Endpoints</a></li>
+    <li><a class="section" href="#clients">Client examples</a></li>
+    <li style="padding-left:8px"><a href="#client-curl">curl</a></li>
+    <li style="padding-left:8px"><a href="#client-js">JavaScript (fetch)</a></li>
+    <li style="padding-left:8px"><a href="#client-react">React</a></li>
+    <li style="padding-left:8px"><a href="#client-axios">React + axios</a></li>
+    <li style="padding-left:8px"><a href="#client-angular">Angular</a></li>
+    <li style="padding-left:8px"><a href="#client-vue">Vue 3</a></li>
+    <li style="padding-left:8px"><a href="#client-node">Node.js</a></li>
+    <li style="padding-left:8px"><a href="#client-python">Python</a></li>
+    <li style="padding-left:8px"><a href="#client-csharp">C# / .NET</a></li>
+    <li style="padding-left:8px"><a href="#client-java">Java</a></li>
+    <li><a class="section" href="#coercion">Parameter type coercion</a></li>
+    <li><a class="section" href="#images">Image resolution</a></li>
+    <li><a class="section" href="#typescript">TypeScript types</a></li>
+    <li><a class="section" href="#errors">Error model</a></li>
+    <li><a class="section" href="#tips">Tips &amp; gotchas</a></li>
+  </ul>
+</nav>
+
+<article>
+
+<!-- =========================== AI block =========================== -->
+<section class="card ai-banner" id="ai">
+  <h2>For AI assistants <a class="anchor" href="#ai">¶</a></h2>
+  <p>
+    If a developer asked Claude / Gemini / ChatGPT / Copilot to integrate this
+    service, this block is the contract you need. It's intentionally compact
+    and covers everything in plain prose so you can keep it in your context
+    window. Use the <strong>Copy AI contract</strong> button at the top right.
+  </p>
+
+  <div class="code-block">
+    <button class="copy-btn" data-clip="ai-contract">Copy</button>
+    <pre id="ai-contract"># LeoJasperService — API contract (for AI integrators)
+
+You are integrating with LeoJasperService, a JasperReports-backed report
+renderer. The contract below is the entire API surface.
+
+## Base URL
+- Development: http://localhost:8080
+- Production:  whatever the user deployed at (ask them).
+
+## Authentication
+EVERY /api/* request (except /api/admin/* and /api/auth/*) MUST include:
+  X-Key-Id:     <publicKeyId>     (issued at company registration)
+  X-Key-Secret: <secret>          (issued at company registration; shown ONCE)
+
+The admin issues these credentials on the /license.html page. The secret is
+stored on the server only as a SHA-256 hash; if it's lost, the admin must
+"rotate" the company's key to issue a new one.
+
+For elevated security, a company may opt into HMAC request signing
+(hmacRequired=true). In that mode the client sends X-Key-Id, X-Timestamp,
+X-Nonce, X-Signature and the secret never traverses the wire. (Currently
+the HMAC verifier is a placeholder — Tier 1 secret auth is the working path.)
+
+The admin browser uses session cookie auth (LEOJASPER_ADMIN_SID) for
+/api/admin/*. Clients never need that cookie.
+
+## License scopes
+At company registration the admin picks one of:
+- READ   — list / get / render only; no uploads, no deletes
+- RENDER — adds /api/reports/render
+- FULL   — full assets CRUD, synthesis, render
+
+Scope is enforced server-side; a stolen READ key cannot delete assets.
+
+## Errors
+- 401 — missing/invalid X-Key-Id+Secret, or admin not logged in (registry locked)
+- 403 — scope does not permit the operation
+- 429 — rate-limited (default 60 req/min per key) or temp auth-lockout
+- 503 — admin has not unlocked the registry yet (no admin login since restart)
+
+## CORS
+Wide-open in dev: allowedOriginPatterns="*", all methods, expose
+Content-Disposition + X-Job-Id. Browser clients do not need a proxy.
+
+## Render synchronously
+POST /api/reports/render
+Content-Type: multipart/form-data
+
+Form fields:
+- templateId    string. id of a server-stored template (one of GET /api/templates).
+                Use this OR `template`, not both.
+- template      file (.jrxml). One-off upload, NOT stored on server.
+- data          file. The payload — JSON, XML, or CSV bytes.
+- dataInline    string. Alternative: paste the data inline.
+- inputFormat   string. "json" | "json-doc" | "xml" | "csv".
+                "json-doc" expects ONE file with two top-level sections:
+                  { "parameters": { ... }, "data": [ ... ] }
+                The parameters object is merged into the report's parameter
+                map (the `parameters` form field, if also sent, overrides
+                values from the file). The data array iterates as detail rows.
+- outputFormat  string (REQUIRED). One of:
+                  pdf | xlsx | xls | html | png | png-zip
+                  docx | odt | rtf | csv | text | pptx
+- parameters    string (optional). JSON object, becomes Map<String,Object>
+                of report parameters (used as $P{NAME} in the template).
+
+Returns:
+- 200 OK with the report bytes.
+  Content-Type matches the format (application/pdf, ..., image/png, ...).
+  Content-Disposition: attachment; filename="report.<ext>"
+- 4xx/5xx JSON body: { "status": int, "error": str, "message": str, "timestamp": iso8601 }
+
+In a browser client: ALWAYS read the success response as a Blob (fetch:
+res.blob(); axios: responseType: "blob"). NEVER JSON.parse the success body.
+
+## Render asynchronously (for slow reports)
+POST /api/reports/render-async  → 202 { "jobId": str, "status": "PENDING" }
+GET  /api/reports/jobs/{id}     → ReportJob JSON (status, timestamps, error)
+GET  /api/reports/jobs/{id}/result → bytes when status == "COMPLETED"
+GET  /api/reports/jobs?limit=20 → recent jobs
+
+ReportJob.status: PENDING | RUNNING | COMPLETED | FAILED | CANCELLED.
+Jobs evict from the in-memory store after 2h by default.
+
+## Templates
+GET    /api/templates           → ["id1", "id2", ...]
+GET    /api/templates/{id}      → .jrxml bytes
+POST   /api/templates           → multipart {id, file}; replaces if exists
+DELETE /api/templates/{id}      → 204 or 404
+
+## Assets (per-company; scope FULL for writes/deletes)
+GET    /api/assets                          → grouped {bucket → [{name,size,...}]}
+GET    /api/assets/{bucket}                 → list one bucket
+POST   /api/assets/{bucket}/{name}          → multipart "file" upload
+GET    /api/assets/{bucket}/{name}          → download (?inline=true for preview)
+DELETE /api/assets/{bucket}/{name}          → soft-delete (30-day restore)
+GET    /api/assets/_trash                   → list this company's trash
+POST   /api/assets/_trash/{trashName}/restore  → restore from trash
+
+Buckets: images, templates, data, other. Path traversal blocked.
+
+## Admin (admin session cookie required, NOT a license key)
+POST   /api/admin/login           → {ok, mustChangePassword, mustSetAssetsRoot, hasCompanies}
+POST   /api/admin/logout
+POST   /api/admin/change-password → re-encrypts credentials.enc + companies.enc
+POST   /api/admin/assets-root     → set the filesystem root (must be writable)
+GET    /api/admin/companies       → list registered companies
+POST   /api/admin/companies       → register; secret is in the response, ONCE
+POST   /api/admin/companies/{keyId}/rotate   → new secret; old invalidated
+POST   /api/admin/companies/{keyId}/disable  → block all calls under that keyId
+POST   /api/admin/companies/{keyId}/enable
+GET    /api/admin/companies/{keyId}/audit    → tamper-evident audit log
+GET    /api/admin/companies/{keyId}/trash    → admin can also see/restore trash
+
+## Health & metrics
+GET /actuator/health     → {"status":"UP", ...}
+GET /actuator/prometheus → Micrometer metrics (leojasper_compile_seconds, leojasper_fill_seconds{inputFormat}, leojasper_export_seconds{outputFormat}, leojasper_errors_total{stage})
+
+## Parameter type coercion (since 2026-05-12)
+Before fillReport, the service walks the JRXML's declared <parameter/> list and
+coerces supplied values to match the declared Java type:
+  - Number → Number: silently converted. Integer 0 works for a Double param,
+    BigDecimal works for a Double, a Long works for an Integer, etc.
+  - Anything → String: String.valueOf(value).
+  - String "true"/"false" → Boolean.
+  - String "5" → Number: REJECTED with HTTP 400 and the message:
+      "Parameter '<name>' is declared as <declared-class> but received
+       <actual-class> ("<preview>"). Only Number→Number and Anything→String
+       coercions are applied automatically; fix the source data to send the
+       correct type."
+Practical effect: producers that emit "qty": 2 (int) and "qty": 2.0 (float)
+both work for a java.lang.Double parameter. But "qty": "2" still fails — make
+sure the source sends a JSON number when the report expects one.
+
+## Image resolution (since 2026-05-12)
+JRXML <imageExpression> evaluations are intercepted:
+  - URLs (http://, https://): fetched with a 5 s connect+read timeout. On
+    failure (DNS, 4xx/5xx, timeout) the placeholder is substituted, NOT an
+    error. data: URIs are decoded by JR natively.
+  - Filenames ("logo.png", "MTC_LOGO", "/Files/Branding/X.png"): basename
+    looked up under the calling company's images/ bucket first, then under
+    companyDir/ and the other buckets. The asset must have been uploaded
+    via POST /api/assets/images/<name>.
+  - Anything not found: a generated 300×80 grey "Resource not found" PNG is
+    returned so the report still renders. To make a specific image fatal on
+    failure, set onErrorType="Error" on that <image> element in the JRXML.
+The filter only applies to image-like paths (URLs, image extensions, or
+extension-less identifiers). Subreports, properties files, and fonts flow
+through to JR's default resolvers unchanged.
+
+## Tips that catch every integrator the first time
+1. Two JSON shapes are supported, controlled by inputFormat:
+   - inputFormat="json"     → root must be an array of objects, one per row:
+                                [ {"name":"A","qty":3}, {"name":"B","qty":7} ]
+                              Parameters come from the multipart "parameters" field only.
+   - inputFormat="json-doc" → single file with TWO sections:
+                                { "parameters": {"customer.code":"C0002", ...},
+                                  "data":       [ {...}, {...} ] }
+                              The "parameters" object is merged into the report
+                              parameter map; the "data" array iterates as rows.
+                              Useful when the source system (an ERP, billing
+                              backend) already produces one self-contained file
+                              per document.
+   To iterate a nested array under inputFormat="json", the JRXML needs
+   <queryString language="json">items</queryString>.
+2. CSV input must include a header row matching the JRXML <field name="..."/>.
+3. For grouped reports, INPUT MUST BE PRE-SORTED by the group field.
+   The server does not sort.
+4. Field types in the JRXML matter (java.lang.Integer rejects non-numeric
+   strings). Use java.lang.String when in doubt.
+5. Currency / date display is handled by the JRXML's pattern attribute
+   (e.g. pattern="$#,##0.00"), NOT by client-side formatting.
+6. Async mode is necessary for any report that takes >30s, since browsers
+   and proxies routinely time out sync requests.
+7. CORS in production should be locked down to your real frontend origin
+   (WebConfig.java in the service repo).
+
+## Minimal working example (curl, with auth headers)
+curl -X POST http://localhost:8080/api/reports/render \
+     -H "X-Key-Id: <your-key-id>" \
+     -H "X-Key-Secret: <your-secret>" \
+     -F templateId=invoice \
+     -F 'dataInline=[{"description":"Service","quantity":1,"unit_price":100,"amount":100}]' \
+     -F inputFormat=json \
+     -F outputFormat=pdf \
+     -F 'parameters={"INVOICE_NUMBER":"INV-001","INVOICE_DATE":"2026-05-08","CUSTOMER_NAME":"Acme","CUSTOMER_ADDRESS":"-"}' \
+     --output report.pdf
+
+# Asset upload (e.g. company logo to be referenced by JRXML)
+curl -X POST "http://localhost:8080/api/assets/images/logo.png" \
+     -H "X-Key-Id: <your-key-id>" \
+     -H "X-Key-Secret: <your-secret>" \
+     -F file=@./logo.png
+
+## End of contract</pre>
+  </div>
+
+  <details>
+    <summary>What the "Copy AI contract" button does</summary>
+    <p>
+      It copies a markdown version of the block above to your clipboard, ready
+      to paste into a chat with Claude, Gemini, ChatGPT, or any code-helper
+      tool. Combined with a one-line ask ("write a React hook that calls this
+      service"), the AI has full information without any guessing.
+    </p>
+  </details>
+</section>
+
+<!-- =========================== Authentication =========================== -->
+<section class="card" id="auth">
+  <h2>Authentication <a class="anchor" href="#auth">¶</a></h2>
+  <p>
+    Every <code>/api/*</code> request other than <code>/api/admin/*</code> and
+    <code>/api/auth/*</code> must include both headers:
+  </p>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="auth-headers">Copy</button>
+<pre id="auth-headers">X-Key-Id:     &lt;publicKeyId&gt;
+X-Key-Secret: &lt;secret&gt;</pre>
+  </div>
+  <p>
+    Credentials are issued by the admin on the
+    <a href="/license.html">license page</a>. The
+    <strong>secret is shown exactly once</strong> at creation. To recover it,
+    rotate the company's key (which immediately invalidates the old one).
+  </p>
+
+  <h3>Why two headers instead of one?</h3>
+  <p>
+    The <code>keyId</code> is public — safe to log, paste in URLs, include
+    in error messages. The <code>secret</code> is private; it never echoes
+    back in any response, never appears in logs, and is stored on the server
+    only as a SHA-256 hash compared in constant time.
+  </p>
+
+  <h3>Scopes</h3>
+  <table>
+    <tr><th>Scope</th><th>Allowed</th><th>Typical use</th></tr>
+    <tr><td><strong>READ</strong></td>
+        <td>list, get, render</td>
+        <td>Headless reporting embed; auditors</td></tr>
+    <tr><td><strong>RENDER</strong></td>
+        <td>READ + render-time multipart inputs</td>
+        <td>Most production printing clients</td></tr>
+    <tr><td><strong>FULL</strong></td>
+        <td>everything (assets CRUD, synthesis)</td>
+        <td>Operations; admin's own integrations</td></tr>
+  </table>
+  <p>Scope is enforced server-side; a stolen READ key cannot delete assets.</p>
+
+  <h3>Defenses against a stolen secret</h3>
+  <ul class="kv">
+    <li><strong>TLS-only</strong> in production — the header is plaintext on
+        the wire and nothing application-level beats HTTPS.</li>
+    <li><strong>Constant-time SHA-256 compare</strong>; secret never exists
+        in plaintext at rest.</li>
+    <li><strong>Rate-limited</strong> to 60 req/min per <code>keyId</code>;
+        misuse triggers 429.</li>
+    <li><strong>Auth-failure lockout</strong> — 5 wrong attempts in 5 minutes
+        locks the source IP for the rest of that window.</li>
+    <li><strong>Soft-delete with 30-day retention</strong> — even with a FULL
+        key, an attacker can't permanently destroy assets within the window.</li>
+    <li><strong>Tamper-evident audit log</strong> per company in
+        <code>.meta/audit.jsonl</code>; each line carries the prev-line hash.</li>
+    <li><strong>Rotation</strong> — admin issues a new secret at any time;
+        old one is invalidated immediately. <code>keyId</code> stays so audit
+        history is continuous.</li>
+    <li><strong>HMAC mode (Tier 2, opt-in per company)</strong> — secret never
+        traverses the wire; client signs each request, server verifies.</li>
+  </ul>
+
+  <h3>Vault adoption on admin login <span class="pill">since 2026-05-12</span></h3>
+  <p>
+    Strictly an admin-side concern — clients never need this. When pointing a
+    fresh install at the assets folder from a previous version, the admin
+    logs in with an optional <code>vaultPath</code>:
+  </p>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="vault-adopt">Copy</button>
+<pre id="vault-adopt">POST /api/admin/login
+Content-Type: application/json
+
+{ "username":  "admin",
+  "password":  "&lt;the old admin password&gt;",
+  "vaultPath": "D:/leojasper-data" }</pre>
+  </div>
+  <p>
+    The path's <code>.leojasper/credentials.enc</code> is unlocked with the
+    supplied password and adopted for the session. Wrong password = 401,
+    no overwrite. Missing file at that path = 404. Path-drift correction
+    rewrites the stored <code>assetsRoot</code> to whatever the admin typed.
+    Lost old password = unrecoverable; AES-GCM has no backdoor.
+  </p>
+  <p>
+    Companion guarantee: setting the assets root through the UI to a path
+    that already has a <code>.leojasper/credentials.enc</code> is rejected
+    with HTTP 400 — there is no longer any way to silently overwrite a
+    vault that contains real client secrets.
+  </p>
+
+  <h3>Browser quirk: image previews can't send custom headers</h3>
+  <p>
+    A browser <code>&lt;img src="…/api/assets/images/logo.png"/&gt;</code>
+    cannot attach <code>X-Key-Id</code>/<code>X-Key-Secret</code>
+    automatically. For preview thumbnails, fetch with
+    <code>fetch(url, { headers: {…} })</code>, get a <code>Blob</code>, and
+    set <code>img.src = URL.createObjectURL(blob)</code>. The
+    <a href="/assets.html">assets page</a> does this — copy the pattern from
+    its source if you need it.
+  </p>
+</section>
+
+<!-- =========================== Endpoints =========================== -->
+<section class="card" id="endpoints">
+  <h2>Endpoints <a class="anchor" href="#endpoints">¶</a></h2>
+
+  <h3>Public</h3>
+  <table>
+    <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+    <tr><td>GET</td>    <td><code>/actuator/health</code></td>     <td>Liveness probe.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/login</code></td>     <td>Admin login (sets session cookie).</td></tr>
+    <tr><td>GET</td>    <td><code>/api/admin/status</code></td>    <td>First-run / login state.</td></tr>
+  </table>
+
+  <h3>Admin (session cookie)</h3>
+  <table>
+    <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/logout</code></td>                              <td>Sign out, lock the registry.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/change-password</code></td>                     <td>Re-encrypt credentials + companies file.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/assets-root</code></td>                         <td>Set the filesystem root for company folders.</td></tr>
+    <tr><td>GET</td>    <td><code>/api/admin/companies</code></td>                           <td>List companies (no secrets in response).</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/companies</code></td>                           <td>Register; <code>secret</code> returned <strong>once</strong>.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/companies/{keyId}/rotate</code></td>            <td>New secret; old invalidated.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/companies/{keyId}/disable</code></td>           <td>Block all calls under that keyId.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/companies/{keyId}/enable</code></td>            <td>Re-enable.</td></tr>
+    <tr><td>GET</td>    <td><code>/api/admin/companies/{keyId}/audit?limit=N</code></td>     <td>Audit entries (newest first).</td></tr>
+    <tr><td>GET</td>    <td><code>/api/admin/companies/{keyId}/trash</code></td>             <td>List trashed assets.</td></tr>
+    <tr><td>POST</td>   <td><code>/api/admin/companies/{keyId}/trash/{name}/restore</code></td><td>Restore from trash.</td></tr>
+  </table>
+
+  <h3>Client (license-keyed)</h3>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:6px">
+    All require <code>X-Key-Id</code> + <code>X-Key-Secret</code>. Scope is enforced.
+  </p>
+  <table>
+    <tr><th>Method</th><th>Path</th><th>Purpose</th><th>Min scope</th></tr>
+    <tr><td>GET</td>    <td><code>/api/reports/formats</code></td>           <td>List supported formats.</td><td>READ</td></tr>
+    <tr><td>POST</td>   <td><code>/api/reports/render</code></td>            <td>Render synchronously.</td><td>RENDER</td></tr>
+    <tr><td>POST</td>   <td><code>/api/reports/render-async</code></td>      <td>Submit a job.</td><td>RENDER</td></tr>
+    <tr><td>GET</td>    <td><code>/api/reports/jobs/{id}</code></td>         <td>Job status.</td><td>READ</td></tr>
+    <tr><td>GET</td>    <td><code>/api/reports/jobs/{id}/result</code></td>  <td>Download bytes.</td><td>READ</td></tr>
+    <tr><td>GET</td>    <td><code>/api/templates</code></td>                 <td>List templates.</td><td>READ</td></tr>
+    <tr><td>POST</td>   <td><code>/api/templates</code></td>                 <td>Upload JRXML.</td><td>FULL</td></tr>
+    <tr><td>DELETE</td> <td><code>/api/templates/{id}</code></td>            <td>Remove template.</td><td>FULL</td></tr>
+    <tr><td>GET</td>    <td><code>/api/assets</code></td>                    <td>List buckets &amp; contents.</td><td>READ</td></tr>
+    <tr><td>POST</td>   <td><code>/api/assets/{bucket}/{name}</code></td>    <td>Upload <span class="pill">multipart "file"</span></td><td>FULL</td></tr>
+    <tr><td>GET</td>    <td><code>/api/assets/{bucket}/{name}</code></td>    <td>Download (<code>?inline=true</code> for preview).</td><td>READ</td></tr>
+    <tr><td>DELETE</td> <td><code>/api/assets/{bucket}/{name}</code></td>    <td>Soft-delete (30-day restore).</td><td>FULL</td></tr>
+    <tr><td>GET</td>    <td><code>/api/assets/_trash</code></td>             <td>List trash for this company.</td><td>READ</td></tr>
+    <tr><td>POST</td>   <td><code>/api/assets/_trash/{name}/restore</code></td><td>Restore from trash.</td><td>FULL</td></tr>
+    <tr><td>POST</td>   <td><code>/api/synthesis/analyze</code></td>         <td>PDF/image → LayoutModel.</td><td>FULL</td></tr>
+    <tr><td>POST</td>   <td><code>/api/synthesis/save</code></td>            <td>Save synthesized JRXML.</td><td>FULL</td></tr>
+  </table>
+  <p>
+    Buckets are a fixed set: <code>images</code>, <code>templates</code>,
+    <code>data</code>, <code>other</code>. Path traversal is rejected — names
+    cannot contain <code>..</code>, <code>/</code>, or <code>\</code>.
+  </p>
+</section>
+
+<!-- =========================== Clients =========================== -->
+<section class="card" id="clients">
+  <h2>Client examples <a class="anchor" href="#clients">¶</a></h2>
+  <p>Pick your stack. Each tab has both <em>sync render</em> and <em>async with polling</em>.
+     Hit the copy button on each block.</p>
+
+  <div class="tabs" id="clientTabs">
+    <button class="tab active" data-tab="curl">curl</button>
+    <button class="tab" data-tab="js">JavaScript</button>
+    <button class="tab" data-tab="react">React</button>
+    <button class="tab" data-tab="axios">React + axios</button>
+    <button class="tab" data-tab="angular">Angular</button>
+    <button class="tab" data-tab="vue">Vue 3</button>
+    <button class="tab" data-tab="node">Node.js</button>
+    <button class="tab" data-tab="python">Python</button>
+    <button class="tab" data-tab="csharp">C# / .NET</button>
+    <button class="tab" data-tab="java">Java</button>
+  </div>
+
+  <!-- ===== curl ===== -->
+  <div class="pane active" data-pane="curl" id="client-curl">
+    <h3>Sync render</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="curl-sync">Copy</button>
+<pre id="curl-sync">curl -X POST http://localhost:8080/api/reports/render \
+     -F templateId=sample \
+     -F 'dataInline=[{"name":"Alpha","qty":3},{"name":"Bravo","qty":7}]' \
+     -F inputFormat=json \
+     -F outputFormat=pdf \
+     --output report.pdf</pre>
+    </div>
+
+    <h3>Sync render with file uploads &amp; parameters</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="curl-file">Copy</button>
+<pre id="curl-file">curl -X POST http://localhost:8080/api/reports/render \
+     -F templateId=invoice \
+     -F "data=@./items.json" \
+     -F inputFormat=json \
+     -F outputFormat=pdf \
+     -F 'parameters={"INVOICE_NUMBER":"INV-001","CUSTOMER_NAME":"Acme"}' \
+     --output invoice.pdf</pre>
+    </div>
+
+    <h3>Async render with polling</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="curl-async">Copy</button>
+<pre id="curl-async">JOB=$(curl -sS -X POST http://localhost:8080/api/reports/render-async \
+        -F templateId=sales-report \
+        -F "data=@./sales.json" \
+        -F inputFormat=json -F outputFormat=xlsx \
+        | jq -r .jobId)
+
+while true; do
+  S=$(curl -sS http://localhost:8080/api/reports/jobs/$JOB | jq -r .status)
+  [ "$S" = "COMPLETED" ] && break
+  [ "$S" = "FAILED"    ] && exit 1
+  sleep 1
+done
+
+curl -sS http://localhost:8080/api/reports/jobs/$JOB/result --output sales.xlsx</pre>
+    </div>
+  </div>
+
+  <!-- ===== JS ===== -->
+  <div class="pane" data-pane="js" id="client-js">
+    <h3>Sync render (browser fetch)</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="js-sync">Copy</button>
+<pre id="js-sync">const BASE = "http://localhost:8080";
+
+async function renderReport({ templateId, data, inputFormat, outputFormat, parameters }) {
+  const fd = new FormData();
+  if (templateId) fd.append("templateId", templateId);
+  if (data instanceof Blob) fd.append("data", data);
+  else fd.append("dataInline", typeof data === "string" ? data : JSON.stringify(data));
+  fd.append("inputFormat",  inputFormat);
+  fd.append("outputFormat", outputFormat);
+  if (parameters) fd.append("parameters", JSON.stringify(parameters));
+
+  const res = await fetch(`${BASE}/api/reports/render`, { method: "POST", body: fd });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(err.message);
+  }
+  return await res.blob();
+}
+
+// Trigger a download in the browser
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a   = Object.assign(document.createElement("a"), { href: url, download: filename });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// usage
+const blob = await renderReport({
+  templateId:   "sample",
+  data:         [{ name: "Alpha", qty: 3 }, { name: "Bravo", qty: 7 }],
+  inputFormat:  "json",
+  outputFormat: "pdf"
+});
+downloadBlob(blob, "report.pdf");</pre>
+    </div>
+
+    <h3>Async render with polling</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="js-async">Copy</button>
+<pre id="js-async">async function renderAsync(opts, { intervalMs = 1000, timeoutMs = 5*60_000 } = {}) {
+  const fd = buildForm(opts);                                // same FormData builder as above
+  const r1 = await fetch(`${BASE}/api/reports/render-async`,
+                         { method: "POST", body: fd });
+  if (!r1.ok) throw new Error((await r1.json()).message);
+  const { jobId } = await r1.json();
+
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const j = await (await fetch(`${BASE}/api/reports/jobs/${jobId}`)).json();
+    if (j.status === "COMPLETED") {
+      const r3 = await fetch(`${BASE}/api/reports/jobs/${jobId}/result`);
+      return r3.blob();
+    }
+    if (j.status === "FAILED" || j.status === "CANCELLED") throw new Error(j.error);
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+  throw new Error("Timed out");
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== React ===== -->
+  <div class="pane" data-pane="react" id="client-react">
+    <h3>Reusable hook (drop into <code>src/hooks/useReport.ts</code>)</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="react-hook">Copy</button>
+<pre id="react-hook">import { useState, useCallback } from "react";
+
+const BASE = import.meta.env.VITE_REPORTS_BASE_URL ?? "http://localhost:8080";
+
+export type RenderOpts = {
+  templateId?:  string;
+  template?:    Blob | File;
+  data?:        Blob | File | string | unknown;
+  inputFormat:  "json" | "json-doc" | "xml" | "csv";
+  outputFormat: "pdf" | "xlsx" | "xls" | "html" | "png" | "png-zip"
+              | "docx" | "odt" | "rtf" | "csv" | "text" | "pptx";
+  parameters?:  Record&lt;string, unknown&gt;;
+};
+
+export function useReport() {
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState&lt;string | null&gt;(null);
+
+  const render = useCallback(async (opts: RenderOpts, filename = "report") => {
+    setLoading(true); setError(null);
+    try {
+      const fd = new FormData();
+      if (opts.templateId) fd.append("templateId", opts.templateId);
+      if (opts.template)   fd.append("template",   opts.template);
+      if (opts.data instanceof Blob) fd.append("data", opts.data);
+      else if (opts.data !== undefined) {
+        fd.append("dataInline",
+          typeof opts.data === "string" ? opts.data : JSON.stringify(opts.data));
+      }
+      fd.append("inputFormat",  opts.inputFormat);
+      fd.append("outputFormat", opts.outputFormat);
+      if (opts.parameters) fd.append("parameters", JSON.stringify(opts.parameters));
+
+      const res = await fetch(`${BASE}/api/reports/render`, { method: "POST", body: fd });
+      if (!res.ok) {
+        const j = await res.json().catch(() =&gt; ({ message: res.statusText }));
+        throw new Error(j.message);
+      }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"),
+                    { href: url, download: `${filename}.${opts.outputFormat}` }).click();
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      setError(e.message); throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { render, loading, error };
+}</pre>
+    </div>
+
+    <h3>Component using the hook</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="react-cmp">Copy</button>
+<pre id="react-cmp">import { useReport } from "./hooks/useReport";
+
+export function ReportButton({ rows }: { rows: any[] }) {
+  const { render, loading, error } = useReport();
+  return (
+    &lt;&gt;
+      &lt;button
+        disabled={loading}
+        onClick={() =&gt; render({
+          templateId:   "sample",
+          data:         rows,
+          inputFormat:  "json",
+          outputFormat: "pdf",
+          parameters:   { REPORT_TITLE: "Q1 Sales" },
+        }, "q1-sales")}
+      &gt;
+        {loading ? "Rendering…" : "Download PDF"}
+      &lt;/button&gt;
+      {error &amp;&amp; &lt;p style={{ color: "crimson" }}&gt;{error}&lt;/p&gt;}
+    &lt;/&gt;
+  );
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== axios ===== -->
+  <div class="pane" data-pane="axios" id="client-axios">
+    <h3>axios client wrapper</h3>
+    <p>The crucial detail with axios: <code>responseType: "blob"</code>.
+       Without it, axios tries to JSON-parse the binary success body and corrupts it.</p>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="axios-client">Copy</button>
+<pre id="axios-client">import axios from "axios";
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_REPORTS_BASE_URL ?? "http://localhost:8080",
+});
+
+export async function renderReport(opts: {
+  templateId?: string; data: any;
+  inputFormat: "json" | "json-doc" | "xml" | "csv";
+  outputFormat: string;
+  parameters?: Record&lt;string, unknown&gt;;
+}): Promise&lt;Blob&gt; {
+  const fd = new FormData();
+  if (opts.templateId) fd.append("templateId", opts.templateId);
+  if (opts.data instanceof Blob) fd.append("data", opts.data);
+  else fd.append("dataInline",
+                 typeof opts.data === "string" ? opts.data : JSON.stringify(opts.data));
+  fd.append("inputFormat",  opts.inputFormat);
+  fd.append("outputFormat", opts.outputFormat);
+  if (opts.parameters) fd.append("parameters", JSON.stringify(opts.parameters));
+
+  try {
+    const res = await api.post("/api/reports/render", fd, { responseType: "blob" });
+    return res.data;                                // already a Blob
+  } catch (e: any) {
+    // For non-2xx, axios still gave us the blob — read it as JSON for the message.
+    if (e.response?.data instanceof Blob) {
+      const text = await e.response.data.text();
+      try { throw new Error(JSON.parse(text).message); }
+      catch { throw new Error(text); }
+    }
+    throw e;
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== Angular ===== -->
+  <div class="pane" data-pane="angular" id="client-angular">
+    <h3>Injectable Angular service</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="ng-service">Copy</button>
+<pre id="ng-service">// reports.service.ts
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Observable, catchError, map, throwError } from "rxjs";
+
+export type OutputFormat =
+  "pdf" | "xlsx" | "xls" | "html" | "png" | "png-zip" |
+  "docx" | "odt" | "rtf" | "csv" | "text" | "pptx";
+
+@Injectable({ providedIn: "root" })
+export class ReportsService {
+  private base = "http://localhost:8080";              // or read from environment.ts
+
+  constructor(private http: HttpClient) {}
+
+  render(opts: {
+    templateId?: string;
+    data: Blob | string | unknown;
+    inputFormat: "json" | "json-doc" | "xml" | "csv";
+    outputFormat: OutputFormat;
+    parameters?: Record&lt;string, unknown&gt;;
+  }): Observable&lt;Blob&gt; {
+    const fd = new FormData();
+    if (opts.templateId) fd.append("templateId", opts.templateId);
+    if (opts.data instanceof Blob) fd.append("data", opts.data);
+    else fd.append("dataInline",
+                   typeof opts.data === "string" ? opts.data : JSON.stringify(opts.data));
+    fd.append("inputFormat",  opts.inputFormat);
+    fd.append("outputFormat", opts.outputFormat);
+    if (opts.parameters) fd.append("parameters", JSON.stringify(opts.parameters));
+
+    return this.http
+      .post(`${this.base}/api/reports/render`, fd, { responseType: "blob" })
+      .pipe(catchError((err: HttpErrorResponse) =&gt; this.toJsonError(err)));
+  }
+
+  private toJsonError(err: HttpErrorResponse): Observable&lt;never&gt; {
+    if (err.error instanceof Blob) {
+      return new Observable(sub =&gt; {
+        const r = new FileReader();
+        r.onload = () =&gt; {
+          try { sub.error(new Error(JSON.parse(r.result as string).message)); }
+          catch { sub.error(new Error(r.result as string)); }
+        };
+        r.readAsText(err.error);
+      });
+    }
+    return throwError(() =&gt; err);
+  }
+}</pre>
+    </div>
+
+    <h3>Component using the service</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="ng-cmp">Copy</button>
+<pre id="ng-cmp">// some.component.ts
+constructor(private reports: ReportsService) {}
+
+downloadPdf() {
+  this.reports.render({
+    templateId: "sample",
+    data: [{ name: "Alpha", qty: 3 }],
+    inputFormat: "json",
+    outputFormat: "pdf",
+  }).subscribe(blob =&gt; {
+    const url = URL.createObjectURL(blob);
+    const a   = Object.assign(document.createElement("a"),
+                              { href: url, download: "report.pdf" });
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== Vue ===== -->
+  <div class="pane" data-pane="vue" id="client-vue">
+    <h3>Composable (<code>useReport.ts</code>)</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="vue-composable">Copy</button>
+<pre id="vue-composable">import { ref } from "vue";
+
+const BASE = import.meta.env.VITE_REPORTS_BASE_URL ?? "http://localhost:8080";
+
+export function useReport() {
+  const loading = ref(false);
+  const error   = ref&lt;string | null&gt;(null);
+
+  async function render(opts: {
+    templateId?: string;
+    data: Blob | string | unknown;
+    inputFormat: "json" | "json-doc" | "xml" | "csv";
+    outputFormat: string;
+    parameters?: Record&lt;string, unknown&gt;;
+  }, filename = "report") {
+    loading.value = true; error.value = null;
+    try {
+      const fd = new FormData();
+      if (opts.templateId) fd.append("templateId", opts.templateId);
+      if (opts.data instanceof Blob) fd.append("data", opts.data);
+      else fd.append("dataInline",
+                     typeof opts.data === "string" ? opts.data : JSON.stringify(opts.data));
+      fd.append("inputFormat",  opts.inputFormat);
+      fd.append("outputFormat", opts.outputFormat);
+      if (opts.parameters) fd.append("parameters", JSON.stringify(opts.parameters));
+
+      const res = await fetch(`${BASE}/api/reports/render`, { method: "POST", body: fd });
+      if (!res.ok) throw new Error((await res.json()).message ?? res.statusText);
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"),
+                    { href: url, download: `${filename}.${opts.outputFormat}` }).click();
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      error.value = e.message; throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  return { render, loading, error };
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== Node ===== -->
+  <div class="pane" data-pane="node" id="client-node">
+    <h3>Server-side render and write to disk (Node 18+, native fetch)</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="node-render">Copy</button>
+<pre id="node-render">import fs from "node:fs/promises";
+
+const BASE = process.env.REPORTS_BASE_URL ?? "http://localhost:8080";
+
+async function render(opts) {
+  const fd = new FormData();
+  if (opts.templateId) fd.append("templateId", opts.templateId);
+  if (opts.data instanceof Blob) fd.append("data", opts.data);
+  else fd.append("dataInline",
+                 typeof opts.data === "string" ? opts.data : JSON.stringify(opts.data));
+  fd.append("inputFormat",  opts.inputFormat);
+  fd.append("outputFormat", opts.outputFormat);
+  if (opts.parameters) fd.append("parameters", JSON.stringify(opts.parameters));
+
+  const res = await fetch(`${BASE}/api/reports/render`, { method: "POST", body: fd });
+  if (!res.ok) throw new Error((await res.json()).message);
+  return Buffer.from(await res.arrayBuffer());
+}
+
+const pdf = await render({
+  templateId:   "invoice",
+  data:         JSON.parse(await fs.readFile("./items.json", "utf8")),
+  inputFormat:  "json",
+  outputFormat: "pdf",
+  parameters:   { INVOICE_NUMBER: "INV-001", CUSTOMER_NAME: "Acme" },
+});
+await fs.writeFile("invoice.pdf", pdf);
+console.log(`wrote ${pdf.length} bytes`);</pre>
+    </div>
+  </div>
+
+  <!-- ===== Python ===== -->
+  <div class="pane" data-pane="python" id="client-python">
+    <h3>Sync render with <code>requests</code></h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="py-sync">Copy</button>
+<pre id="py-sync">import json, requests
+from pathlib import Path
+
+BASE = "http://localhost:8080"
+
+def render_report(*, template_id=None, template_path=None,
+                  data=None, data_path=None,
+                  input_format, output_format, parameters=None) -&gt; bytes:
+    files = {}
+    if template_id:    files["templateId"]  = (None, template_id)
+    if template_path:  files["template"]    = ("t.jrxml", Path(template_path).read_bytes(),
+                                               "application/xml")
+    if data_path:      files["data"]        = (Path(data_path).name,
+                                               Path(data_path).read_bytes(),
+                                               "application/octet-stream")
+    elif data is not None:
+        body = data if isinstance(data, str) else json.dumps(data)
+        files["dataInline"] = (None, body)
+    files["inputFormat"]  = (None, input_format)
+    files["outputFormat"] = (None, output_format)
+    if parameters:        files["parameters"] = (None, json.dumps(parameters))
+
+    r = requests.post(f"{BASE}/api/reports/render", files=files)
+    if not r.ok:
+        try:    raise RuntimeError(r.json()["message"])
+        except (ValueError, KeyError): r.raise_for_status()
+    return r.content
+
+# usage
+pdf = render_report(
+    template_id  = "sample",
+    data         = [{"name": "Alpha", "qty": 3}, {"name": "Bravo", "qty": 7}],
+    input_format = "json",
+    output_format= "pdf",
+)
+Path("report.pdf").write_bytes(pdf)</pre>
+    </div>
+  </div>
+
+  <!-- ===== C# ===== -->
+  <div class="pane" data-pane="csharp" id="client-csharp">
+    <h3>HttpClient wrapper</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="cs-client">Copy</button>
+<pre id="cs-client">using System.Net.Http.Json;
+using System.Text.Json;
+
+public sealed class LeoJasperClient(HttpClient http) {
+    public async Task&lt;byte[]&gt; RenderAsync(
+        string templateId,
+        object data,
+        string inputFormat,
+        string outputFormat,
+        IDictionary&lt;string, object&gt;? parameters = null,
+        CancellationToken ct = default) {
+
+        using var form = new MultipartFormDataContent();
+        form.Add(new StringContent(templateId), "templateId");
+        form.Add(new StringContent(
+            data is string s ? s : JsonSerializer.Serialize(data)), "dataInline");
+        form.Add(new StringContent(inputFormat),  "inputFormat");
+        form.Add(new StringContent(outputFormat), "outputFormat");
+        if (parameters is not null)
+            form.Add(new StringContent(JsonSerializer.Serialize(parameters)), "parameters");
+
+        using var res = await http.PostAsync("/api/reports/render", form, ct);
+        if (!res.IsSuccessStatusCode) {
+            var err = await res.Content.ReadFromJsonAsync&lt;JsonElement&gt;(cancellationToken: ct);
+            throw new InvalidOperationException(err.GetProperty("message").GetString());
+        }
+        return await res.Content.ReadAsByteArrayAsync(ct);
+    }
+}
+
+// register in Program.cs
+builder.Services.AddHttpClient&lt;LeoJasperClient&gt;(c =&gt; c.BaseAddress =
+    new Uri("http://localhost:8080"));
+
+// use
+var pdf = await client.RenderAsync(
+    templateId:  "sample",
+    data:        new[] { new { name = "Alpha", qty = 3 } },
+    inputFormat: "json", outputFormat: "pdf");
+File.WriteAllBytes("report.pdf", pdf);</pre>
+    </div>
+  </div>
+
+  <!-- ===== Java ===== -->
+  <div class="pane" data-pane="java" id="client-java">
+    <h3>java.net.http multipart client (JDK 11+)</h3>
+    <div class="code-block">
+      <button class="copy-btn" data-clip="java-client">Copy</button>
+<pre id="java-client">import java.net.URI;
+import java.net.http.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
+
+public class LeoJasperClient {
+    private final HttpClient http = HttpClient.newHttpClient();
+    private final String base;
+    public LeoJasperClient(String base) { this.base = base; }
+
+    public byte[] render(String templateId, String dataInlineOrJson,
+                         String inputFormat, String outputFormat,
+                         Map&lt;String, Object&gt; parameters) throws Exception {
+        String boundary = "----leoJ" + System.nanoTime();
+        var parts = new ArrayList&lt;byte[]&gt;();
+        parts.add(field(boundary, "templateId",   templateId));
+        parts.add(field(boundary, "dataInline",   dataInlineOrJson));
+        parts.add(field(boundary, "inputFormat",  inputFormat));
+        parts.add(field(boundary, "outputFormat", outputFormat));
+        if (parameters != null) {
+            parts.add(field(boundary, "parameters",
+                            new com.fasterxml.jackson.databind.ObjectMapper()
+                                .writeValueAsString(parameters)));
+        }
+        parts.add(("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
+        byte[] body = concat(parts);
+
+        HttpRequest req = HttpRequest.newBuilder(URI.create(base + "/api/reports/render"))
+            .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(body))
+            .build();
+        HttpResponse&lt;byte[]&gt; res = http.send(req, HttpResponse.BodyHandlers.ofByteArray());
+        if (res.statusCode() / 100 != 2) {
+            throw new RuntimeException(new String(res.body(), StandardCharsets.UTF_8));
+        }
+        return res.body();
+    }
+
+    private static byte[] field(String b, String name, String value) {
+        return ("--" + b + "\r\n" +
+                "Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n" +
+                value + "\r\n").getBytes(StandardCharsets.UTF_8);
+    }
+    private static byte[] concat(List&lt;byte[]&gt; chunks) {
+        int n = chunks.stream().mapToInt(c -&gt; c.length).sum();
+        byte[] out = new byte[n]; int off = 0;
+        for (byte[] c : chunks) { System.arraycopy(c, 0, out, off, c.length); off += c.length; }
+        return out;
+    }
+}
+
+// use
+var client = new LeoJasperClient("http://localhost:8080");
+byte[] pdf = client.render(
+    "sample",
+    "[{\"name\":\"Alpha\",\"qty\":3}]",
+    "json", "pdf",
+    Map.of());
+Files.write(Paths.get("report.pdf"), pdf);</pre>
+    </div>
+  </div>
+
+</section>
+
+<!-- =========================== TS types =========================== -->
+<section class="card" id="typescript">
+  <h2>TypeScript types <a class="anchor" href="#typescript">¶</a></h2>
+  <p>Drop these into <code>src/types/leoJasper.ts</code>; they cover every API
+     response shape.</p>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="ts-types">Copy</button>
+<pre id="ts-types">export type InputFormat  = "json" | "json-doc" | "xml" | "csv";
+export type OutputFormat =
+  | "pdf" | "xlsx" | "xls" | "html" | "png" | "png-zip"
+  | "docx" | "odt" | "rtf" | "csv" | "text" | "pptx";
+
+export type RenderRequest = {
+  templateId?:  string;
+  template?:    Blob | File;
+  data?:        Blob | File;
+  dataInline?:  string;
+  inputFormat:  InputFormat;
+  outputFormat: OutputFormat;
+  parameters?:  Record&lt;string, unknown&gt;;
+};
+
+export type ReportJobStatus =
+  "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "CANCELLED";
+
+export type ReportJob = {
+  id: string;
+  status: ReportJobStatus;
+  templateId: string;
+  inputFormat: string;
+  outputFormat: string;
+  submittedAt: string;
+  startedAt?:  string | null;
+  finishedAt?: string | null;
+  contentType?: string | null;
+  filename?:    string | null;
+  error?:       string | null;
+};
+
+export type ApiError = {
+  status: number;
+  error:  string;
+  message: string;
+  timestamp: string;
+};
+
+export type FormatsResponse = {
+  input:  InputFormat[];
+  output: OutputFormat[];
+};</pre>
+  </div>
+</section>
+
+<!-- =========================== Parameter type coercion =========================== -->
+<section class="card" id="coercion">
+  <h2>Parameter type coercion <a class="anchor" href="#coercion">¶</a></h2>
+  <p>
+    Before filling, the service walks the JRXML's declared
+    <code>&lt;parameter/&gt;</code> elements and coerces each supplied value
+    to the declared Java type. Producers that send numeric data with
+    surprising precision (a long-form decimal, a bare integer, a
+    <code>BigDecimal</code>) don't have to match the JRXML's
+    <code>class</code> attribute exactly — but a real type mismatch
+    (sending a String when the report expects a number) still fails fast
+    with a clear 400, not a cryptic JR cast exception during evaluation.
+  </p>
+
+  <h3>Rules applied</h3>
+  <table>
+    <tr><th>Declared</th><th>Supplied</th><th>Outcome</th></tr>
+    <tr><td><code>Double</code> / <code>Float</code></td>
+        <td>any <code>Number</code> (<code>Integer</code>, <code>Long</code>, <code>BigDecimal</code>, …)</td>
+        <td>silently converted via <code>.doubleValue()</code> / <code>.floatValue()</code></td></tr>
+    <tr><td><code>Integer</code> / <code>Long</code> / <code>Short</code> / <code>Byte</code></td>
+        <td>any <code>Number</code></td>
+        <td>silently converted via <code>.intValue()</code> / <code>.longValue()</code> / …</td></tr>
+    <tr><td><code>BigDecimal</code></td>
+        <td>any <code>Number</code></td>
+        <td><code>new BigDecimal(n.toString())</code></td></tr>
+    <tr><td><code>BigInteger</code></td>
+        <td>any <code>Number</code></td>
+        <td><code>BigInteger.valueOf(n.longValue())</code></td></tr>
+    <tr><td><code>String</code></td>
+        <td>anything non-null</td>
+        <td><code>String.valueOf(v)</code> — no error</td></tr>
+    <tr><td><code>Boolean</code></td>
+        <td><code>"true"</code> / <code>"false"</code> string</td>
+        <td><code>Boolean.parseBoolean</code></td></tr>
+    <tr><td><strong>Number of any kind</strong></td>
+        <td><strong>String <code>"5"</code></strong></td>
+        <td style="color:var(--error-fg)"><strong>HTTP 400 with the actual type mismatch</strong></td></tr>
+    <tr><td>Anything else (Date, custom POJO)</td>
+        <td>non-matching</td>
+        <td style="color:var(--error-fg)">HTTP 400, clear message</td></tr>
+  </table>
+
+  <h3>Concrete examples</h3>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="coerce-ok">Copy</button>
+<pre id="coerce-ok"># JRXML declares: &lt;parameter name="totals.subTotal" class="java.lang.Double"/&gt;
+
+{"totals.subTotal": 46}             ✓ Integer → Double
+{"totals.subTotal": 46.0}           ✓ Double → Double
+{"totals.subTotal": 46.000000000}   ✓ Double (still fits)
+{"totals.subTotal": 0.0000000000000000000000000000}
+                                    ✓ BigDecimal → Double (precision clipped — acceptable)
+{"totals.subTotal": null}           ✓ stays null (JR renders blank)
+
+{"totals.subTotal": "46"}           ✗ HTTP 400: String→Number rejected</pre>
+  </div>
+
+  <h3>Error shape for type mismatches</h3>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="coerce-err">Copy</button>
+<pre id="coerce-err">{
+  "status":  400,
+  "error":   "Bad Request",
+  "message": "Parameter 'totals.subTotal' is declared as java.lang.Double
+              but received java.lang.String (\"46\"). Only Number→Number
+              and Anything→String coercions are applied automatically;
+              fix the source data to send the correct type.",
+  "timestamp": "2026-05-12T09:00:00Z"
+}</pre>
+  </div>
+
+  <h3>How to fix a String→Number rejection in your client</h3>
+  <ul class="kv">
+    <li><strong>JavaScript:</strong> use <code>Number(value)</code> when building
+        the JSON. <code>JSON.stringify({"qty": Number("2")})</code> emits
+        <code>{"qty":2}</code> as a JSON number, not a string.</li>
+    <li><strong>C#:</strong> bind the JSON property to <code>double</code> /
+        <code>decimal</code> in your DTO, not <code>string</code>. The default
+        serializer emits numbers correctly.</li>
+    <li><strong>Java:</strong> same — typed POJO field, not <code>String</code>.</li>
+    <li><strong>Python:</strong> pass <code>int</code> / <code>float</code>
+        to <code>json.dumps</code>. <code>{"qty": int(qty)}</code> emits a
+        JSON number.</li>
+  </ul>
+</section>
+
+<!-- =========================== Image resolution =========================== -->
+<section class="card" id="images">
+  <h2>Image resolution <a class="anchor" href="#images">¶</a></h2>
+  <p>
+    JRXML <code>&lt;imageExpression&gt;</code> values are intercepted by a
+    per-company image resolver during fill, so reports keep rendering even
+    when a logo is missing or a remote URL is unreachable.
+  </p>
+
+  <h3>Resolution order</h3>
+  <table>
+    <tr><th>If the expression evaluates to…</th><th>Behaviour</th></tr>
+    <tr><td><code>http://…</code> or <code>https://…</code></td>
+        <td>Fetched with a 5 s connect + 5 s read timeout. On any failure
+            (DNS, 4xx/5xx, timeout, malformed response) the placeholder is
+            substituted — the report still renders.</td></tr>
+    <tr><td><code>data:image/…;base64,…</code></td>
+        <td>Decoded natively by JR.</td></tr>
+    <tr><td>A filename like <code>"logo.png"</code> or <code>"MTC_LOGO"</code></td>
+        <td>Basename looked up under your company's <code>images/</code>
+            bucket first, then <code>companyDir/</code>, then the other
+            buckets. First hit wins.</td></tr>
+    <tr><td>A leading-slash path like <code>"/Files/Branding/Logo.png"</code></td>
+        <td>The leading directory is stripped; basename (<code>Logo.png</code>)
+            looked up exactly like a plain filename. Useful when an ERP
+            embeds absolute paths from its own filesystem.</td></tr>
+    <tr><td>Anything else (file not found, URL fetch failed)</td>
+        <td>A generated 300×80 grey PNG labelled <em>"Resource not found"</em>
+            is rendered into the slot. The fill <strong>does not fail</strong>.</td></tr>
+  </table>
+
+  <h3>How to upload an image so the resolver finds it</h3>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="img-upload">Copy</button>
+<pre id="img-upload">curl -X POST "http://localhost:8080/api/assets/images/logo.png" \
+     -H "X-Key-Id: $KEY_ID" -H "X-Key-Secret: $SECRET" \
+     -F "file=@./logo.png"
+
+# JRXML then references it by either:
+&lt;imageExpression&gt;&lt;![CDATA["logo.png"]]&gt;&lt;/imageExpression&gt;
+&lt;imageExpression&gt;&lt;![CDATA["logo"]]&gt;&lt;/imageExpression&gt;
+&lt;imageExpression&gt;&lt;![CDATA[$P{COMPANY_LOGO}]]&gt;&lt;/imageExpression&gt;  # with COMPANY_LOGO="logo.png"</pre>
+  </div>
+
+  <h3>What's NOT intercepted</h3>
+  <p>
+    The resolver only fires for image-like paths — URLs, paths with image
+    extensions (<code>.png .jpg .jpeg .gif .svg .webp .bmp .tif .tiff .ico</code>),
+    or extension-less identifiers like <code>"MTC_LOGO"</code>. Subreports
+    (<code>.jasper</code> / <code>.jrxml</code>), properties files, and fonts
+    flow through to JR's default resolvers untouched.
+  </p>
+
+  <h3>Making a specific image fatal on failure</h3>
+  <p>
+    Sometimes you want a missing image to abort the render (e.g. a regulatory
+    seal that must always render). Set <code>onErrorType="Error"</code> on
+    that one <code>&lt;image&gt;</code> element in the JRXML — it overrides
+    the per-fill resolver's silent fallback:
+  </p>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="img-fatal">Copy</button>
+<pre id="img-fatal">&lt;image onErrorType="Error"&gt;
+  &lt;reportElement x="0" y="0" width="100" height="60"/&gt;
+  &lt;imageExpression&gt;&lt;![CDATA["regulatory-seal.png"]]&gt;&lt;/imageExpression&gt;
+&lt;/image&gt;</pre>
+  </div>
+
+  <h3>Per-fill: no LicenseContext = no resolver</h3>
+  <p>
+    The custom resolver requires an authenticated request (so we know which
+    company's <code>images/</code> to search). CLI runs or callers without
+    license headers get JR's default behaviour, which throws on missing
+    images. This only matters if you bypass the standard
+    <code>/api/reports/render</code> route.
+  </p>
+</section>
+
+<!-- =========================== Errors =========================== -->
+<section class="card" id="errors">
+  <h2>Error model <a class="anchor" href="#errors">¶</a></h2>
+  <p>Every 4xx/5xx response is JSON in this shape:</p>
+  <div class="code-block">
+    <button class="copy-btn" data-clip="err-shape">Copy</button>
+<pre id="err-shape">{
+  "status":    400,
+  "error":     "Bad Request",
+  "message":   "Unknown templateId: invoice",
+  "timestamp": "2026-05-08T14:42:00Z"
+}</pre>
+  </div>
+
+  <table>
+    <tr><th>Code</th><th>Typical cause</th></tr>
+    <tr><td>400</td>
+        <td>Wrong <code>templateId</code>, malformed <code>parameters</code> JSON, unsupported format, JRXML schema validation, missing required field, <strong>parameter type mismatch the auto-coercer can't bridge</strong> (e.g. supplying a JSON string for a numeric parameter — see <a href="#coercion">Parameter type coercion</a>), or an attempt to set <code>assetsRoot</code> to a folder that already contains a vault.</td></tr>
+    <tr><td>404</td>
+        <td>Job id / template id not found, or stray static path.</td></tr>
+    <tr><td>409</td>
+        <td>Calling <code>/jobs/{id}/result</code> before the job is <code>COMPLETED</code>.</td></tr>
+    <tr><td>413</td>
+        <td>Multipart payload exceeds the server limit (default 50 MB; configurable in <code>application.yml</code>).</td></tr>
+    <tr><td>500</td>
+        <td>JasperReports parsing/rendering failure inside the engine. <code>message</code> carries the JR error verbatim — usually a missing field, type mismatch, or band-overflow.</td></tr>
+  </table>
+</section>
+
+<!-- =========================== Tips =========================== -->
+<section class="card" id="tips">
+  <h2>Tips &amp; gotchas <a class="anchor" href="#tips">¶</a></h2>
+  <ul class="kv">
+    <li><strong>Numbers in JSON must be JSON numbers.</strong>
+        Emitting <code>"qty":"2"</code> (a string) for a JRXML
+        <code>java.lang.Integer</code> field is rejected with HTTP 400.
+        The auto-coercer handles Number→Number (Integer 0 → Double 0.0,
+        BigDecimal → Double, etc.) but not String→Number. Fix the producer
+        to emit a real JSON number, not a quoted string. See
+        <a href="#coercion">Parameter type coercion</a> for the full table.</li>
+    <li><strong>Images get a placeholder on miss, never an error.</strong>
+        If a logo isn't uploaded or a URL is down, the slot renders a 300×80
+        grey "Resource not found" PNG and the report continues. Upload company
+        images via <code>POST /api/assets/images/&lt;name&gt;</code>, reference
+        them by filename in the JRXML, or by <code>$P{NAME}</code> with a
+        parameter value of the filename. See
+        <a href="#images">Image resolution</a>.</li>
+    <li><strong>JSON shape.</strong> The default JSON data source iterates the
+        root if it's an array (<code>[{…},{…}]</code>). Wrap an array inside
+        an object only if your JRXML sets
+        <code>&lt;queryString language="json"&gt;items&lt;/queryString&gt;</code>.</li>
+    <li><strong>CSV.</strong> First line must be the header row. Header names
+        must match the JRXML <code>&lt;field name="…"/&gt;</code> declarations.</li>
+    <li><strong>Grouping.</strong> Sort the data by the group field before
+        sending. The server does <em>not</em> sort.</li>
+    <li><strong>Field types.</strong> The JRXML <code>class</code> attribute is
+        strict — <code>java.lang.Integer</code> rejects non-numeric strings.
+        Use <code>java.lang.String</code> when in doubt and convert in
+        expressions.</li>
+    <li><strong>Currency / dates.</strong> Format on the server side via the
+        <code>pattern</code> attribute on the <code>&lt;textField&gt;</code>,
+        not on the client. e.g. <code>pattern="$#,##0.00"</code> or
+        <code>pattern="yyyy-MM-dd"</code>.</li>
+    <li><strong>Async vs sync.</strong> Anything that takes &gt; ~30 s should
+        go through <code>/render-async</code>; browsers and proxies
+        time out longer sync requests routinely.</li>
+    <li><strong>Binary in JS.</strong> Always read the success body as a Blob.
+        For axios, set <code>responseType: "blob"</code>. Never JSON-parse
+        the success body — only the error body is JSON.</li>
+    <li><strong>CORS in production.</strong> The dev config is wide-open
+        (<code>allowedOriginPatterns="*"</code>). Lock it to your real
+        frontend origin before shipping.</li>
+    <li><strong>Templates hot-reload.</strong> Drop a new <code>.jrxml</code>
+        into the server's <code>templates/</code> directory and the next
+        render picks it up — the cache invalidates on mtime change.</li>
+  </ul>
+</section>
+
+</article>
+</main>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll("#clientTabs .tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#clientTabs .tab").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".pane").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelector(`.pane[data-pane="${btn.dataset.tab}"]`).classList.add("active");
+    });
+  });
+
+  // Per-snippet copy buttons
+  document.querySelectorAll(".copy-btn[data-clip]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const txt = document.getElementById(btn.dataset.clip).textContent;
+      await copy(txt, btn);
+    });
+  });
+
+  // Top-right "Copy AI contract" — copies the full contract block
+  document.getElementById("copyAi").addEventListener("click", async (e) => {
+    const txt = document.getElementById("ai-contract").textContent;
+    await copy(txt, e.currentTarget);
+    showToast("AI contract copied — paste into Claude / Gemini / ChatGPT");
+  });
+
+  async function copy(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for older browsers
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch {}
+      document.body.removeChild(ta);
+    }
+    if (btn && btn.classList.contains("copy-btn")) {
+      const original = btn.textContent;
+      btn.classList.add("copied");
+      btn.textContent = "✓ Copied";
+      setTimeout(() => { btn.textContent = original; btn.classList.remove("copied"); }, 1500);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  // Smooth-scroll for sidebar anchors
+  document.querySelectorAll("nav.toc a").forEach(a => {
+    a.addEventListener("click", e => {
+      const id = a.getAttribute("href").slice(1);
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: "smooth" }); history.replaceState(null, "", "#" + id); }
+    });
+  });
+</script>
+
+</body>
+</html>

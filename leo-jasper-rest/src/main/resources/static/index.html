@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoJasperService — template tester</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📄</text></svg>">
+<style>
+  :root {
+    --fg: #1a1a1a;
+    --muted: #6a6a6a;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --border: #e2e2e2;
+    --accent: #0066cc;
+    --accent-hover: #0052a3;
+    --error-bg: #fff4f4;
+    --error-fg: #b00020;
+    --success-bg: #f1faf3;
+    --success-fg: #1f7a3a;
+    --code-bg: #1d2025;
+    --code-fg: #e8e8ec;
+    --code-muted: #8b94a3;
+    --code-out: #7ec699;
+    --code-in:  #80aaff;
+    --code-err: #ff8585;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  header {
+    padding: 22px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; flex-wrap: wrap;
+  }
+  h1 { font-size: 20px; margin: 0; font-weight: 600; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  main {
+    display: flex; flex-direction: column; gap: 20px;
+    padding: 24px 32px;
+    max-width: 1500px; margin: 0 auto;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .row-2 {
+    display: grid; gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  @media (max-width: 900px) { .row-2 { grid-template-columns: 1fr; } }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
+       color: var(--muted); margin: 0 0 14px; font-weight: 600; }
+  h2 .actions { float: right; display: flex; gap: 6px; text-transform: none; letter-spacing: 0; }
+  label { display: block; font-size: 13px; font-weight: 500; margin: 14px 0 6px; }
+  label.inline { display: inline-flex; align-items: center; gap: 6px;
+                 font-weight: 400; margin: 0 14px 0 0; }
+  input[type="text"], input[type="file"], select, textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+    background: #fff;
+  }
+  textarea { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+             font-size: 13px; min-height: 100px; resize: vertical; }
+  input[type="file"] { padding: 6px; }
+  select { background: #fff; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .toggle-group { display: flex; gap: 6px; margin-bottom: 8px; }
+  .toggle-group button {
+    flex: 1; padding: 6px 10px; border: 1px solid var(--border);
+    background: #fff; border-radius: 6px; cursor: pointer; font: inherit;
+    font-size: 13px;
+  }
+  .toggle-group button.active {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+  }
+  button.primary {
+    margin-top: 18px; padding: 11px 18px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 7px; font: inherit; font-weight: 500;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  button.primary:hover { background: var(--accent-hover); }
+  button.primary:disabled { opacity: .55; cursor: wait; }
+  button.secondary, .header-link {
+    padding: 7px 12px; background: #fff; border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer; font: inherit; font-size: 13px;
+    color: var(--fg); text-decoration: none;
+    display: inline-flex; gap: 6px; align-items: center;
+  }
+  button.secondary:hover, .header-link:hover { background: #f4f4f7; }
+  .header-link.primary {
+    background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500;
+  }
+  .header-link.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 12px; color: var(--muted); margin-top: 4px;
+  }
+  .placeholder {
+    color: var(--muted); text-align: center; padding: 50px 20px;
+    border: 1px dashed var(--border); border-radius: 8px;
+    font-size: 14px;
+  }
+  .download-card {
+    border: 1px solid var(--success-fg);
+    background: var(--success-bg);
+    border-radius: 8px; padding: 18px;
+  }
+  .download-card a.download {
+    display: inline-block; margin-top: 10px;
+    background: var(--success-fg); color: #fff;
+    padding: 9px 16px; border-radius: 6px; text-decoration: none;
+    font-weight: 500; font-size: 14px;
+  }
+  .download-card a.download:hover { background: #155a2a; }
+  .preview { margin-top: 12px; }
+  .preview img, .preview iframe {
+    max-width: 100%; border: 1px solid var(--border); border-radius: 6px;
+    background: #fff;
+  }
+  .preview iframe { width: 100%; height: 480px; }
+  .error-card {
+    border: 1px solid var(--error-fg); background: var(--error-bg);
+    border-radius: 8px; padding: 16px;
+  }
+  .error-card pre {
+    background: #fff5f5; border-radius: 6px; padding: 10px;
+    overflow: auto; font-size: 12px; margin: 8px 0 0;
+  }
+  pre { margin: 0; }
+
+  /* ===== Activity log ===== */
+  .log {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: 8px; padding: 0;
+    font: 12.5px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    height: 480px; overflow: auto;
+    border: 1px solid #2a2e36;
+  }
+  .log:empty::before {
+    content: "No requests yet. Click Render to start.";
+    display: block; padding: 22px; color: var(--code-muted);
+    font-style: italic; text-align: center;
+  }
+  .log-entry {
+    border-bottom: 1px solid #2a2e36; padding: 10px 14px;
+  }
+  .log-entry:first-child { background: #232730; }
+  .log-entry .head {
+    display: flex; gap: 10px; align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .log-entry .ts    { color: var(--code-muted); font-size: 11.5px; }
+  .log-entry .arrow { font-weight: 700; }
+  .log-entry .arrow.out { color: var(--code-out); }
+  .log-entry .arrow.in  { color: var(--code-in); }
+  .log-entry .arrow.err { color: var(--code-err); }
+  .log-entry .arrow.note{ color: #d6c25e; }
+  .log-entry .title { color: var(--code-fg); }
+  .log-entry .status-200 { color: var(--code-out); }
+  .log-entry .status-bad { color: var(--code-err); }
+  .log-entry .copy-line {
+    margin-left: auto; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; border: 1px solid #3a3f48;
+    background: rgba(255,255,255,.04); color: #c7cad1; cursor: pointer;
+  }
+  .log-entry .copy-line:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .log-entry .copy-line.copied { background: var(--success-fg); color: #fff; border-color: var(--success-fg); }
+  .log-entry .details {
+    margin: 6px 0 0 0; padding: 0;
+    color: var(--code-muted); white-space: pre-wrap; word-break: break-word;
+  }
+  .log-entry .details .k { color: #a9b3c2; }
+  .log-entry .details .v { color: #e8e8ec; }
+  .log-entry .details .body {
+    color: #e0e6f0; background: rgba(255,255,255,.04);
+    border-radius: 4px; padding: 6px 8px; margin-top: 4px;
+    display: block; white-space: pre-wrap;
+  }
+
+  .pill {
+    display: inline-block; font-size: 11px; padding: 1px 8px;
+    border-radius: 999px; background: #ececf2; color: var(--fg);
+    margin-left: 6px;
+  }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>LeoJasperService — template tester
+      <span class="pill" id="health">checking…</span>
+      <span class="pill" id="companyPill" style="background:#eef5ff;color:#1e3a8a;cursor:pointer" title="Click to set license credentials">no company</span>
+    </h1>
+    <p>Upload a <code>.jrxml</code> template, point it at JSON / XML / CSV data, pick an output, and download the result. Errors come back parsed and pretty.</p>
+  </div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+    <a href="/license.html"   class="header-link" title="Admin / company management">🔑 License</a>
+    <a href="/assets.html"    class="header-link" title="Manage assets">📁 Assets</a>
+    <a href="/synthesis.html" class="header-link" title="Generate a JRXML from a PDF or image">✨ Synthesis</a>
+    <a href="/help.html" target="_blank" rel="noopener" class="header-link primary"
+       title="Open API client integration guide in a new tab">
+      📘 API docs &nbsp;↗
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Activity log — full width, prominent, on top -->
+  <section class="card">
+    <h2>
+      Activity log <span class="pill" id="logCount">0</span>
+      <span class="actions">
+        <button class="secondary" id="copyLogBtn" type="button">📋 Copy</button>
+        <button class="secondary" id="clearLogBtn" type="button">Clear</button>
+      </span>
+    </h2>
+    <div class="log" id="log"></div>
+  </section>
+
+
+  <!-- Form and result side by side -->
+  <div class="row-2">
+
+    <section class="card">
+      <h2>Render request</h2>
+
+      <label>Template</label>
+      <div class="toggle-group" id="tplMode">
+        <button data-mode="stored" class="active" type="button">From server</button>
+        <button data-mode="upload" type="button">Upload .jrxml</button>
+      </div>
+      <div id="tplStored">
+        <select id="templateId"><option value="">— loading —</option></select>
+        <div class="hint">List comes from <code>GET /api/templates</code>. Drop new files into the server's <code>templates/</code> directory.</div>
+      </div>
+      <div id="tplUpload" hidden>
+        <input type="file" id="templateFile" accept=".jrxml,application/xml,text/xml">
+        <div class="hint">Uploaded templates are <strong>not stored</strong> on the server — single-shot only.</div>
+      </div>
+
+      <label>Data</label>
+      <div class="toggle-group" id="dataMode">
+        <button data-mode="upload" class="active" type="button">Upload file</button>
+        <button data-mode="inline" type="button">Paste inline</button>
+      </div>
+      <div id="dataUpload">
+        <input type="file" id="dataFile" accept=".json,.xml,.csv,application/json,application/xml,text/csv,text/xml,text/plain">
+        <div class="hint">Format auto-detected from the file extension.</div>
+      </div>
+      <div id="dataInline" hidden>
+        <textarea id="dataInlineText" placeholder='[{"name":"Alpha","qty":3},{"name":"Bravo","qty":7}]'></textarea>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="inputFormat">Input format</label>
+          <select id="inputFormat">
+            <option value="">auto-detect</option>
+            <option value="json">json (root array)</option>
+            <option value="json-doc">json-doc (parameters + data in one file)</option>
+            <option value="xml">xml</option>
+            <option value="csv">csv</option>
+          </select>
+          <div class="hint" id="jsonDocHint" hidden style="margin-top:4px">
+            File shape: <code>{ "parameters": { … }, "data": [ … ] }</code>.
+            Anything you paste in the parameters section below <strong>overrides</strong>
+            values from the file.
+          </div>
+        </div>
+        <div>
+          <label for="outputFormat">Output format</label>
+          <select id="outputFormat">
+            <option value="pdf" selected>pdf</option>
+            <option value="xlsx">xlsx</option>
+            <option value="xls">xls</option>
+            <option value="html">html</option>
+            <option value="png">png</option>
+            <option value="png-zip">png-zip (multi-page)</option>
+            <option value="docx">docx</option>
+            <option value="odt">odt</option>
+            <option value="rtf">rtf</option>
+            <option value="csv">csv</option>
+            <option value="text">text</option>
+            <option value="pptx">pptx</option>
+          </select>
+        </div>
+      </div>
+
+      <details>
+        <summary>Report parameters (optional JSON)</summary>
+        <textarea id="parameters" placeholder='{"REPORT_TITLE":"Q1 Sales"}'></textarea>
+      </details>
+
+      <details>
+        <summary>Mode</summary>
+        <div style="margin-top:8px">
+          <label class="inline"><input type="radio" name="async" value="sync" checked> Synchronous</label>
+          <label class="inline"><input type="radio" name="async" value="async"> Async (poll job)</label>
+        </div>
+      </details>
+
+      <button class="primary" id="renderBtn" type="button">
+        <span id="renderLabel">Render</span>
+      </button>
+      <button class="secondary" id="clearBtn" type="button" style="margin-top:18px;margin-left:8px">Clear result</button>
+    </section>
+
+    <section class="card">
+      <h2>Result</h2>
+      <div id="result">
+        <div class="placeholder">Render a report to see the result here.</div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<script>
+const BASE = location.origin;
+const $    = (q) => document.querySelector(q);
+const ts   = () => {
+  const d = new Date();
+  return d.toLocaleTimeString([], { hour12: false }) +
+         "." + String(d.getMilliseconds()).padStart(3, "0");
+};
+
+let lastBlobUrl = null;
+let logEntries  = [];   // for "Copy log" — keeps a plain-text trail
+
+// ====================================================================
+// Verbose activity log
+// ====================================================================
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/**
+ * Append a log entry. `kind` ∈ "out" | "in" | "err" | "note".
+ * `head` = string for the headline. `details` = object/array of lines.
+ */
+function logEntry(kind, head, details) {
+  const arrow = kind === "out" ? "→" : kind === "in" ? "←" : kind === "err" ? "✗" : "•";
+  const time  = ts();
+
+  // Plain-text version (for Copy log)
+  const flatText = `[${time}] ${arrow} ${head}\n` +
+    (details && details.length ? details.map(l => "    " + l).join("\n") + "\n" : "");
+  logEntries.push(flatText);
+
+  // HTML version
+  const div = document.createElement("div");
+  div.className = "log-entry";
+  let html = `<div class="head">
+      <span class="ts">${escapeHtml(time)}</span>
+      <span class="arrow ${kind}">${arrow}</span>
+      <span class="title">${head}</span>
+      <button class="copy-line" data-flat title="Copy this entry">Copy</button>
+    </div>`;
+  if (details && details.length) {
+    html += `<div class="details">${details.map(l =>
+      typeof l === "string" ? escapeHtml(l) : l.html
+    ).join("\n")}</div>`;
+  }
+  div.innerHTML = html;
+  div.querySelector(".copy-line").addEventListener("click", e => {
+    navigator.clipboard.writeText(flatText).then(() => {
+      const b = e.currentTarget;
+      b.textContent = "✓"; b.classList.add("copied");
+      setTimeout(() => { b.textContent = "Copy"; b.classList.remove("copied"); }, 1200);
+    });
+  });
+
+  $("#log").prepend(div);
+  $("#logCount").textContent = $("#log").children.length;
+}
+
+/** A line where part is a key=value pair (for nicer rendering). */
+function kv(key, value) {
+  return { html: `<span class="k">${escapeHtml(key)}:</span> <span class="v">${escapeHtml(value)}</span>` };
+}
+function bodyLine(label, body) {
+  return { html: `<span class="k">${escapeHtml(label)}:</span>\n<span class="body">${escapeHtml(body)}</span>` };
+}
+
+// ====================================================================
+// Instrumented fetch — logs request and response in detail
+// ====================================================================
+
+function previewString(s, max = 240) {
+  if (s.length <= max) return s;
+  return s.slice(0, max) + ` … [+${s.length - max} chars]`;
+}
+
+// Inject X-Key-Id + X-Key-Secret on /api/* requests (skip /api/admin/* and /api/auth/*).
+function injectAuthHeaders(url, init) {
+  const path = url.startsWith(BASE) ? url.slice(BASE.length) : url;
+  if (!path.startsWith("/api/") || path.startsWith("/api/admin") || path.startsWith("/api/auth")) {
+    return init;
+  }
+  const creds = (() => { try { return JSON.parse(localStorage.getItem("leojasper.assets-creds") || "null"); } catch { return null; } })();
+  if (!creds) return init;
+  const headers = init.headers instanceof Headers
+      ? Object.fromEntries(init.headers.entries())
+      : Object.assign({}, init.headers || {});
+  if (creds.keyId)     headers["X-Key-Id"]     = creds.keyId;
+  if (creds.keySecret) headers["X-Key-Secret"] = creds.keySecret;
+  return Object.assign({}, init, { headers });
+}
+
+async function loggedFetch(url, init = {}) {
+  init = injectAuthHeaders(url, init);
+  const t0 = performance.now();
+  const method = (init.method || "GET").toUpperCase();
+  const path = url.startsWith(BASE) ? url.slice(BASE.length) : url;
+
+  // ---- request log ----
+  const reqDetails = [];
+  if (init.body instanceof FormData) {
+    reqDetails.push(kv("Content-Type", "multipart/form-data"));
+    for (const [k, v] of init.body.entries()) {
+      if (v instanceof File) {
+        reqDetails.push(kv(k, `file "${v.name}" — ${v.size} bytes — ${v.type || "application/octet-stream"}`));
+      } else if (v instanceof Blob) {
+        reqDetails.push(kv(k, `blob — ${v.size} bytes — ${v.type || "application/octet-stream"}`));
+      } else {
+        const s = String(v);
+        reqDetails.push(kv(k, previewString(s) + ` (${s.length} bytes)`));
+      }
+    }
+  } else if (init.body) {
+    reqDetails.push(kv("body", `${(init.body.length || init.body.size || 0)} bytes`));
+  }
+  if (init.headers) {
+    for (const [k, v] of Object.entries(init.headers)) {
+      reqDetails.push(kv(k, v));
+    }
+  }
+  logEntry("out", `<strong>${method}</strong> <code>${escapeHtml(path)}</code>`, reqDetails);
+
+  // ---- send ----
+  let res, error;
+  try { res = await fetch(url, init); }
+  catch (e) { error = e; }
+  const ms = Math.round(performance.now() - t0);
+
+  if (error) {
+    logEntry("err", `<strong>${method}</strong> ${escapeHtml(path)} — network error`, [
+      kv("error", error.message),
+      kv("elapsed", `${ms} ms`),
+    ]);
+    throw error;
+  }
+
+  // ---- response log ----
+  const ct  = res.headers.get("content-type") || "";
+  const cd  = res.headers.get("content-disposition");
+  const cl  = res.headers.get("content-length");
+  const loc = res.headers.get("location");
+  const xj  = res.headers.get("x-job-id");
+
+  // Peek body for logging without consuming res.
+  const peek = res.clone();
+  let bodyDesc;
+  if (ct.includes("application/json") || ct.startsWith("text/")) {
+    const txt = await peek.text();
+    bodyDesc = bodyLine(`body (${txt.length} bytes, ${ct})`, previewString(txt, 800));
+  } else {
+    const ab = await peek.arrayBuffer();
+    const head = new Uint8Array(ab.slice(0, Math.min(8, ab.byteLength)));
+    const hex  = Array.from(head).map(b => b.toString(16).padStart(2, "0")).join(" ");
+    bodyDesc = bodyLine(`body (${ab.byteLength} bytes, ${ct})`,
+      `binary  — first bytes: ${hex}`);
+  }
+
+  const resDetails = [
+    kv("status", `${res.status} ${res.statusText}`),
+    kv("elapsed", `${ms} ms`),
+  ];
+  if (cl)  resDetails.push(kv("Content-Length",      cl));
+  if (cd)  resDetails.push(kv("Content-Disposition", cd));
+  if (loc) resDetails.push(kv("Location",            loc));
+  if (xj)  resDetails.push(kv("X-Job-Id",            xj));
+  resDetails.push(bodyDesc);
+
+  const headHtml =
+    `<span class="${res.ok ? "status-200" : "status-bad"}">${res.status}</span> ` +
+    escapeHtml(res.statusText) + " ← " +
+    `<strong>${method}</strong> <code>${escapeHtml(path)}</code>`;
+  logEntry(res.ok ? "in" : "err", headHtml, resDetails);
+
+  return res;
+}
+
+// ====================================================================
+// Company-credentials picker (clicking the company pill prompts for keyId+secret)
+// ====================================================================
+function refreshCompanyPill() {
+  const creds = (() => { try { return JSON.parse(localStorage.getItem("leojasper.assets-creds") || "null"); } catch { return null; } })();
+  const pill = $("#companyPill");
+  if (creds && creds.keyId) {
+    pill.textContent = "company " + creds.keyId.slice(0,8) + "…";
+    pill.style.background = "#d6e8ff";
+  } else {
+    pill.textContent = "no company";
+    pill.style.background = "#eef5ff";
+  }
+}
+$("#companyPill").addEventListener("click", () => {
+  const cur = (() => { try { return JSON.parse(localStorage.getItem("leojasper.assets-creds") || "null"); } catch { return null; } })() || {};
+  const id = prompt("X-Key-Id (paste from license page; leave blank to clear):", cur.keyId || "");
+  if (id === null) return;
+  if (!id.trim()) { localStorage.removeItem("leojasper.assets-creds"); refreshCompanyPill(); logEntry("note","License credentials cleared",[]); return; }
+  const secret = prompt("X-Key-Secret:", cur.keySecret || "");
+  if (secret === null) return;
+  localStorage.setItem("leojasper.assets-creds", JSON.stringify({ keyId: id.trim(), keySecret: secret.trim() }));
+  refreshCompanyPill();
+  logEntry("note", `License credentials stored (keyId <code>${escapeHtml(id.slice(0,8))}…</code>)`, []);
+});
+refreshCompanyPill();
+
+// ====================================================================
+// Bootstrap: health + template list (also logged)
+// ====================================================================
+(async function () {
+  try {
+    const r = await loggedFetch(`${BASE}/actuator/health`);
+    const j = await r.json();
+    $("#health").textContent = j.status === "UP" ? "service UP" : `service ${j.status}`;
+    $("#health").style.background = j.status === "UP" ? "#d6f1de" : "#fde0e0";
+  } catch {
+    $("#health").textContent = "service unreachable";
+    $("#health").style.background = "#fde0e0";
+  }
+
+  try {
+    const r = await loggedFetch(`${BASE}/api/templates`);
+    const list = await r.json();
+    const sel = $("#templateId");
+    sel.innerHTML = "";
+    if (!list.length) {
+      sel.innerHTML = '<option value="">(no templates on server)</option>';
+    } else {
+      for (const id of list) {
+        const o = document.createElement("option");
+        o.value = id; o.textContent = id; sel.appendChild(o);
+      }
+    }
+  } catch (e) {
+    $("#templateId").innerHTML = '<option value="">(failed to load)</option>';
+  }
+})();
+
+// ====================================================================
+// Toggle groups
+// ====================================================================
+function bindToggle(rootSel, paneMap) {
+  const root = $(rootSel);
+  root.addEventListener("click", e => {
+    const btn = e.target.closest("button[data-mode]");
+    if (!btn) return;
+    [...root.children].forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const mode = btn.dataset.mode;
+    for (const [m, sel] of Object.entries(paneMap)) {
+      $(sel).hidden = (m !== mode);
+    }
+  });
+}
+bindToggle("#tplMode",  { stored: "#tplStored", upload: "#tplUpload" });
+bindToggle("#dataMode", { upload: "#dataUpload", inline: "#dataInline" });
+
+// ====================================================================
+// Format auto-detect
+// ====================================================================
+$("#dataFile").addEventListener("change", async () => {
+  const f = $("#dataFile").files[0];
+  if (!f) return;
+  const ext = f.name.toLowerCase().split(".").pop();
+  if (["json","xml","csv"].includes(ext) && !$("#inputFormat").value) {
+    $("#inputFormat").value = ext;
+  }
+  // If it's JSON, peek at the head and switch to json-doc when we see
+  // both a "parameters" and "data" key at the top level.
+  if (ext === "json" && f.size < 5 * 1024 * 1024) {
+    try {
+      const txt = await f.slice(0, Math.min(f.size, 64 * 1024)).text();
+      // Cheap structural check — we're only looking at the head, so this
+      // can miss heavy whitespace formatting, but it covers the common case.
+      if (/^\s*\{[\s\S]*"parameters"\s*:/.test(txt) && /"data"\s*:\s*\[/.test(txt)) {
+        $("#inputFormat").value = "json-doc";
+      }
+    } catch { /* ignore peek errors */ }
+  }
+  updateJsonDocHint();
+});
+
+function updateJsonDocHint() {
+  $("#jsonDocHint").hidden = $("#inputFormat").value !== "json-doc";
+}
+$("#inputFormat").addEventListener("change", updateJsonDocHint);
+updateJsonDocHint();
+
+// ====================================================================
+// Render
+// ====================================================================
+$("#renderBtn").addEventListener("click", async () => {
+  const tplMode  = $("#tplMode  button.active").dataset.mode;
+  const dataMode = $("#dataMode button.active").dataset.mode;
+  const outputFormat = $("#outputFormat").value;
+  const inputFormat  = $("#inputFormat").value;
+  const params       = $("#parameters").value.trim();
+  const isAsync      = document.querySelector('input[name="async"]:checked').value === "async";
+
+  const fd = new FormData();
+
+  if (tplMode === "stored") {
+    const id = $("#templateId").value;
+    if (!id) { showError("Pick a stored template or switch to upload."); return; }
+    fd.append("templateId", id);
+  } else {
+    const f = $("#templateFile").files[0];
+    if (!f) { showError("Choose a .jrxml file to upload."); return; }
+    fd.append("template", f);
+  }
+
+  if (dataMode === "upload") {
+    const f = $("#dataFile").files[0];
+    if (!f) { showError("Choose a data file or paste inline."); return; }
+    fd.append("data", f);
+  } else {
+    const txt = $("#dataInlineText").value;
+    if (!txt.trim()) { showError("Inline data is empty."); return; }
+    fd.append("dataInline", txt);
+  }
+
+  if (inputFormat) fd.append("inputFormat", inputFormat);
+  fd.append("outputFormat", outputFormat);
+  if (params) {
+    try { JSON.parse(params); }
+    catch (e) { showError("Parameters must be valid JSON: " + e.message); return; }
+    fd.append("parameters", params);
+  }
+
+  setBusy(true);
+  const t0 = performance.now();
+  try {
+    logEntry("note", `Render started — output=<code>${escapeHtml(outputFormat)}</code>, mode=<code>${isAsync ? "async" : "sync"}</code>`, []);
+    const blob = isAsync
+      ? await runAsync(fd, outputFormat)
+      : await runSync(fd);
+    const ms = Math.round(performance.now() - t0);
+    showSuccess(blob, outputFormat, ms);
+    logEntry("note", `<span style="color:#7ec699">✓</span> Render complete — ${blob.size.toLocaleString()} bytes in ${ms} ms`, []);
+  } catch (e) {
+    showError(e.message || String(e), e.body);
+  } finally {
+    setBusy(false);
+  }
+});
+
+async function runSync(fd) {
+  const res = await loggedFetch(`${BASE}/api/reports/render`, { method: "POST", body: fd });
+  if (!res.ok) throw await toError(res);
+  return res.blob();
+}
+
+async function runAsync(fd, outputFormat) {
+  const r = await loggedFetch(`${BASE}/api/reports/render-async`, { method: "POST", body: fd });
+  if (!r.ok) throw await toError(r);
+  const { jobId } = await r.json();
+  logEntry("note", `Job submitted — id=<code>${escapeHtml(jobId)}</code>; polling every 800 ms`, []);
+
+  for (let i = 0; i < 600; i++) {
+    await new Promise(res => setTimeout(res, 800));
+    const jr = await loggedFetch(`${BASE}/api/reports/jobs/${jobId}`);
+    const job = await jr.json();
+    if (job.status === "COMPLETED") {
+      const dr = await loggedFetch(`${BASE}/api/reports/jobs/${jobId}/result`);
+      if (!dr.ok) throw await toError(dr);
+      return dr.blob();
+    }
+    if (job.status === "FAILED" || job.status === "CANCELLED") {
+      throw new Error(job.error || job.status);
+    }
+  }
+  throw new Error("Timed out waiting for async job");
+}
+
+async function toError(res) {
+  // The body was already drained by loggedFetch via clone(), so this is fine.
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) {
+    const body = await res.json().catch(() => null);
+    const e = new Error(body?.message || `HTTP ${res.status}`);
+    e.body = body;
+    return e;
+  }
+  return new Error(`HTTP ${res.status}: ${await res.text()}`);
+}
+
+// ====================================================================
+// Result panel
+// ====================================================================
+function setBusy(b) {
+  $("#renderBtn").disabled = b;
+  $("#renderLabel").textContent = b ? "Rendering…" : "Render";
+}
+
+function showSuccess(blob, fmt, ms) {
+  if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+  lastBlobUrl = URL.createObjectURL(blob);
+  const filename = `report.${fmt === "png-zip" ? "zip" : fmt}`;
+
+  const card = document.createElement("div");
+  card.className = "download-card";
+  card.innerHTML = `
+    <div><strong>Rendered ${blob.size.toLocaleString()} bytes</strong> in ${ms} ms — <code>${blob.type || "application/octet-stream"}</code></div>
+    <a class="download" href="${lastBlobUrl}" download="${filename}">⇣  Download ${filename}</a>
+  `;
+
+  if (fmt === "html" || fmt === "pdf") {
+    const iframe = document.createElement("iframe"); iframe.src = lastBlobUrl;
+    const wrap = document.createElement("div"); wrap.className = "preview"; wrap.appendChild(iframe);
+    card.appendChild(wrap);
+  } else if (fmt === "png") {
+    const img = document.createElement("img"); img.src = lastBlobUrl;
+    const wrap = document.createElement("div"); wrap.className = "preview"; wrap.appendChild(img);
+    card.appendChild(wrap);
+  }
+
+  $("#result").innerHTML = "";
+  $("#result").appendChild(card);
+}
+
+function showError(message, body) {
+  const div = document.createElement("div");
+  div.className = "error-card";
+  let html = `<strong>${escapeHtml(message)}</strong>`;
+  if (body) html += `<pre>${escapeHtml(JSON.stringify(body, null, 2))}</pre>`;
+  div.innerHTML = html;
+  $("#result").innerHTML = "";
+  $("#result").appendChild(div);
+  logEntry("err", `Render failed`, [kv("message", message)]);
+}
+
+// ====================================================================
+// Log controls
+// ====================================================================
+$("#clearLogBtn").addEventListener("click", () => {
+  $("#log").innerHTML = "";
+  logEntries = [];
+  $("#logCount").textContent = "0";
+});
+
+$("#copyLogBtn").addEventListener("click", () => {
+  const text = logEntries.join("");
+  navigator.clipboard.writeText(text).then(() => {
+    const b = $("#copyLogBtn");
+    const t = b.textContent;
+    b.textContent = "✓ Copied"; setTimeout(() => b.textContent = t, 1500);
+  });
+});
+
+$("#clearBtn").addEventListener("click", () => {
+  $("#result").innerHTML = '<div class="placeholder">Render a report to see the result here.</div>';
+  if (lastBlobUrl) { URL.revokeObjectURL(lastBlobUrl); lastBlobUrl = null; }
+});
+
+// ====================================================================
+// Deep-link prefill: ?templateId=<id>&prefill=1
+//   When the synthesis page redirects here after saving, auto-select the
+//   template, fetch its sample data + parameters, and load them into the
+//   render form so the user can immediately click Render to test.
+// ====================================================================
+(async function prefillFromQuery() {
+  const params = new URLSearchParams(location.search);
+  const tid = params.get("templateId");
+  if (!tid) return;
+
+  // Wait briefly for the templateId dropdown bootstrap to finish.
+  for (let i = 0; i < 30; i++) {
+    if ($("#templateId").options.length > 0 &&
+        $("#templateId").options[0].value !== "") break;
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  const sel = $("#templateId");
+  if (![...sel.options].some(o => o.value === tid)) {
+    const opt = document.createElement("option");
+    opt.value = tid; opt.textContent = tid;
+    sel.appendChild(opt);
+  }
+  sel.value = tid;
+
+  if (params.get("prefill") !== "1") return;
+
+  try {
+    const [d, p] = await Promise.all([
+      loggedFetch(`${BASE}/api/synthesis/${encodeURIComponent(tid)}/sample-data?rows=5`).then(r => r.text()),
+      loggedFetch(`${BASE}/api/synthesis/${encodeURIComponent(tid)}/sample-parameters`).then(r => r.text()),
+    ]);
+    const inlineBtn = document.querySelector("#dataMode button[data-mode='inline']");
+    if (inlineBtn) inlineBtn.click();
+    $("#dataInlineText").value = d;
+    $("#parameters").value     = p;
+    $("#inputFormat").value    = "json";
+    logEntry("note",
+      `<span style="color:#7ec699">✓</span> Pre-filled from synthesized template <code>${escapeHtml(tid)}</code>. Click Render to test.`,
+      []);
+  } catch (e) {
+    logEntry("err", `Failed to load sample data for ${tid}`, [kv("message", e.message)]);
+  }
+})();
+
+</script>
+
+</body>
+</html>

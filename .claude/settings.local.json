@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(jar|zip\\)$\")",
+      "Bash(grep -E \"\\\\.\\(jar|zip|class\\)$\")",
+      "Bash(git checkout *)",
+      "Bash(git rm *)",
+      "Bash(git add *)"
+    ]
+  }
+}

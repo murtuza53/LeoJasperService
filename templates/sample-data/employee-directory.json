@@ -1,0 +1,13 @@
+[
+  {"name": "Alice Chen",     "department": "Engineering", "title": "Staff Engineer",       "email": "alice@acme.com",  "phone": "+1-555-0100"},
+  {"name": "Bob Diaz",       "department": "Engineering", "title": "Senior Engineer",      "email": "bob@acme.com",    "phone": "+1-555-0101"},
+  {"name": "Carol Smith",    "department": "Engineering", "title": "Engineering Manager",  "email": "carol@acme.com",  "phone": "+1-555-0102"},
+  {"name": "Iris Patel",     "department": "Engineering", "title": "Software Engineer",    "email": "iris@acme.com",   "phone": "+1-555-0103"},
+  {"name": "David Jones",    "department": "Finance",     "title": "Controller",           "email": "david@acme.com",  "phone": "+1-555-0200"},
+  {"name": "Eve Brown",      "department": "Finance",     "title": "Senior Accountant",    "email": "eve@acme.com",    "phone": "+1-555-0201"},
+  {"name": "Karen Park",     "department": "Marketing",   "title": "Director of Growth",   "email": "karen@acme.com",  "phone": "+1-555-0400"},
+  {"name": "Liam O'Connor",  "department": "Marketing",   "title": "Content Lead",         "email": "liam@acme.com",   "phone": "+1-555-0401"},
+  {"name": "Frank Miller",   "department": "Sales",       "title": "VP of Sales",          "email": "frank@acme.com",  "phone": "+1-555-0300"},
+  {"name": "Grace Lee",      "department": "Sales",       "title": "Account Executive",    "email": "grace@acme.com",  "phone": "+1-555-0301"},
+  {"name": "Henry Wong",     "department": "Sales",       "title": "Sales Engineer",       "email": "henry@acme.com",  "phone": "+1-555-0302"}
+]

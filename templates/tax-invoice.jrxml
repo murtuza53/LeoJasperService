@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="tax-invoice"
+              pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30">
+
+    <parameter name="INVOICE_NUMBER" class="java.lang.String"/>
+    <parameter name="INVOICE_DATE" class="java.lang.String"/>
+    <parameter name="TRN_NUMBER" class="java.lang.String"/>
+    <parameter name="SENDER_COMPANY_NAME" class="java.lang.String"/>
+    <parameter name="SENDER_ADDRESS" class="java.lang.String"/>
+    <parameter name="SENDER_CR" class="java.lang.String"/>
+    <parameter name="CUSTOMER_COMPANY_NAME" class="java.lang.String"/>
+    <parameter name="CUSTOMER_ADDRESS" class="java.lang.String"/>
+    <parameter name="CUSTOMER_TRN" class="java.lang.String"/>
+    <parameter name="PAYMENT_TERM_1" class="java.lang.String"/>
+    <parameter name="PAYMENT_TERM_2" class="java.lang.String"/>
+    <parameter name="PAYMENT_TERM_3" class="java.lang.String"/>
+    <parameter name="BANK_NAME" class="java.lang.String"/>
+    <parameter name="BANK_ACCOUNT_NAME" class="java.lang.String"/>
+    <parameter name="BANK_IBAN" class="java.lang.String"/>
+    <parameter name="SUBTOTAL" class="java.lang.Double"/>
+    <parameter name="TOTAL_VAT" class="java.lang.Double"/>
+    <parameter name="GRAND_TOTAL" class="java.lang.Double"/>
+    <parameter name="AMOUNT_IN_WORDS" class="java.lang.String"/>
+
+    <field name="description" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.Integer"/>
+    <field name="unit_price" class="java.lang.Double"/>
+    <field name="vat_percentage" class="java.lang.String"/>
+    <field name="vat_amount" class="java.lang.Double"/>
+    <field name="total_bhd" class="java.lang.Double"/>
+
+    <title>
+        <band height="57">
+            <staticText>
+                <reportElement x="0" y="0" width="150" height="30" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="28" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TAX INVOICE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="35" width="150" height="20" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="14"/>
+                </textElement>
+                <text><![CDATA[فاتورة ضريبية]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <pageHeader>
+        <band height="192">
+            <staticText>
+                <reportElement x="350" y="0" width="80" height="15" forecolor="#666666"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[INVOICE NO:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="430" y="0" width="105" height="15" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{INVOICE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="350" y="15" width="80" height="15" forecolor="#666666"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[DATE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="430" y="15" width="105" height="15" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{INVOICE_DATE}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="350" y="30" width="80" height="15" forecolor="#666666"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[TRN:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="430" y="30" width="105" height="15" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TRN_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="70" width="250" height="120" backcolor="#FFFFFF" mode="Opaque"/>
+                <box>
+                    <topPen lineWidth="0.5" lineStyle="Solid" lineColor="#1F3A5F"/>
+                    <leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#1F3A5F"/>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#1F3A5F"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#1F3A5F"/>
+                </box>
+                <text><![CDATA[]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="15" y="75" width="100" height="15" forecolor="#666666"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[FROM / من]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="15" y="95" width="220" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{SENDER_COMPANY_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="15" y="115" width="220" height="40"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{SENDER_ADDRESS}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="15" y="155" width="220" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{SENDER_CR}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="285" y="70" width="250" height="120" backcolor="#FFFFFF" mode="Opaque"/>
+                <box>
+                    <topPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A2BE2"/>
+                    <leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A2BE2"/>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A2BE2"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#8A2BE2"/>
+                </box>
+                <text><![CDATA[]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="300" y="75" width="100" height="15" forecolor="#666666"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[BILL TO / فاتورة الى]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="300" y="95" width="220" height="20"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_COMPANY_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="115" width="220" height="40"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_ADDRESS}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="155" width="220" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CUSTOMER_TRN}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+
+    <columnHeader>
+        <band height="24">
+            <staticText>
+                <reportElement x="0" y="0" width="220" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Left">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[DESCRIPTION / الوصف]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="220" y="0" width="40" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[QTY]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="260" y="0" width="70" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[UNIT PRICE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="330" y="0" width="50" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[VAT %]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="380" y="0" width="70" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[VAT AMT]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="450" y="0" width="85" height="22" backcolor="#F4F6F9" mode="Opaque" forecolor="#1F3A5F"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL (BHD)]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="22">
+            <textField>
+                <reportElement x="0" y="0" width="220" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Left">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="220" y="0" width="40" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Center">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.000">
+                <reportElement x="260" y="0" width="70" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{unit_price}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="330" y="0" width="50" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Center">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{vat_percentage}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.000">
+                <reportElement x="380" y="0" width="70" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{vat_amount}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.000">
+                <reportElement x="450" y="0" width="85" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{total_bhd}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="32">
+            <staticText>
+                <reportElement x="350" y="0" width="150" height="15"/>
+                <textElement textAlignment="Center">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Authorized Signatory]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="15" width="150" height="15"/>
+                <textElement textAlignment="Center">
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[التوقيع المعتمد]]></text>
+            </staticText>
+        </band>
+    </pageFooter>
+
+    <summary>
+        <band height="147">
+            <staticText>
+                <reportElement x="0" y="0" width="200" height="15" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PAYMENT TERMS / شروط الدفع]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="20" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{PAYMENT_TERM_1}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="35" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{PAYMENT_TERM_2}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="50" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{PAYMENT_TERM_3}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="80" width="200" height="15" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[BANK DETAILS / تفاصيل البنك]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="100" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{BANK_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="115" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{BANK_ACCOUNT_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="130" width="250" height="15"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{BANK_IBAN}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="285" y="0" width="250" height="70" backcolor="#F4F6F9" mode="Opaque"/>
+                <box>
+                    <topPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <text><![CDATA[]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="295" y="5" width="130" height="20" forecolor="#666666"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Subtotal / المجموع الفرعي]]></text>
+            </staticText>
+            <textField pattern="#,##0.000">
+                <reportElement x="435" y="5" width="90" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{SUBTOTAL}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="295" y="25" width="130" height="20" forecolor="#666666"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Total VAT / إجمالي الضريبة]]></text>
+            </staticText>
+            <textField pattern="#,##0.000">
+                <reportElement x="435" y="25" width="90" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{TOTAL_VAT}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="295" y="45" width="130" height="20" forecolor="#1F3A5F"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL BHD / الإجمالي]]></text>
+            </staticText>
+            <textField pattern="#,##0.000">
+                <reportElement x="435" y="45" width="90" height="20" forecolor="#1F3A5F"/>
+                <textElement textAlignment="Right">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{GRAND_TOTAL}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="285" y="80" width="250" height="30" forecolor="#666666"/>
+                <textElement>
+                    <font size="9" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{AMOUNT_IN_WORDS}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

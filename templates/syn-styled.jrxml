@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="syn-styled"
+              pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30">
+
+    <parameter name="INVOICE_NUMBER" class="java.lang.String"/>
+    <parameter name="INVOICE_DATE" class="java.lang.String"/>
+    <parameter name="CUSTOMER_NAME" class="java.lang.String"/>
+    <parameter name="CUSTOMER_ADDRESS" class="java.lang.String"/>
+
+    <field name="description" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.Integer"/>
+    <field name="unit_price" class="java.lang.Double"/>
+    <field name="amount" class="java.lang.Double"/>
+
+    <columnHeader>
+        <band height="24">
+            <staticText>
+                <reportElement x="0" y="0" width="290" height="22" backcolor="#1F3A5F" mode="Opaque" forecolor="#FFFFFF"/>
+                <box>
+                    <topPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Left">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="290" y="0" width="60" height="22" backcolor="#1F3A5F" mode="Opaque" forecolor="#FFFFFF"/>
+                <box>
+                    <topPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Qty]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="0" width="90" height="22" backcolor="#1F3A5F" mode="Opaque" forecolor="#FFFFFF"/>
+                <box>
+                    <topPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Unit Price]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="440" y="0" width="95" height="22" backcolor="#1F3A5F" mode="Opaque" forecolor="#FFFFFF"/>
+                <box>
+                    <topPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="22">
+            <textField>
+                <reportElement x="0" y="0" width="290" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Left">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="290" y="0" width="60" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="350" y="0" width="90" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{unit_price}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="440" y="0" width="95" height="18"/>
+                <box>
+                    <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                    <rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+                </box>
+                <textElement textAlignment="Right">
+                </textElement>
+                <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

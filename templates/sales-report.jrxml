@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="sales-report" pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30">
+
+    <field name="region"      class="java.lang.String"/>
+    <field name="salesperson" class="java.lang.String"/>
+    <field name="product"     class="java.lang.String"/>
+    <field name="units"       class="java.lang.Integer"/>
+    <field name="revenue"     class="java.lang.Double"/>
+
+    <variable name="regionRevenue" class="java.lang.Double"
+              resetType="Group" resetGroup="regionGroup" calculation="Sum">
+        <variableExpression><![CDATA[$F{revenue}]]></variableExpression>
+    </variable>
+    <variable name="grandRevenue" class="java.lang.Double" calculation="Sum">
+        <variableExpression><![CDATA[$F{revenue}]]></variableExpression>
+    </variable>
+
+    <group name="regionGroup">
+        <groupExpression><![CDATA[$F{region}]]></groupExpression>
+        <groupHeader>
+            <band height="22">
+                <textField>
+                    <reportElement x="0" y="2" width="535" height="18"
+                                   backcolor="#E0E8F0" mode="Opaque"/>
+                    <textElement verticalAlignment="Middle">
+                        <font size="12" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA["  Region: " + $F{region}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="22">
+                <staticText>
+                    <reportElement x="0" y="2" width="395" height="18"/>
+                    <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                    <text><![CDATA[Subtotal:  ]]></text>
+                </staticText>
+                <textField pattern="$#,##0.00">
+                    <reportElement x="395" y="2" width="140" height="18"/>
+                    <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                    <textFieldExpression><![CDATA[$V{regionRevenue}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <title>
+        <band height="40">
+            <staticText>
+                <reportElement x="0" y="0" width="535" height="30"/>
+                <textElement><font size="20" isBold="true"/></textElement>
+                <text><![CDATA[Sales Report]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="150" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Salesperson]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="150" y="0" width="195" height="20"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[Product]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="345" y="0" width="50" height="20"/>
+                <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                <text><![CDATA[Units]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="395" y="0" width="140" height="20"/>
+                <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                <text><![CDATA[Revenue]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="150" height="18"/>
+                <textFieldExpression><![CDATA[$F{salesperson}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="150" y="0" width="195" height="18"/>
+                <textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="345" y="0" width="50" height="18"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{units}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="395" y="0" width="140" height="18"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{revenue}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="40">
+            <line>
+                <reportElement x="0" y="0" width="535" height="1"/>
+            </line>
+            <staticText>
+                <reportElement x="0" y="10" width="395" height="22"/>
+                <textElement textAlignment="Right"><font size="13" isBold="true"/></textElement>
+                <text><![CDATA[GRAND TOTAL:  ]]></text>
+            </staticText>
+            <textField pattern="$#,##0.00">
+                <reportElement x="395" y="10" width="140" height="22"/>
+                <textElement textAlignment="Right"><font size="13" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$V{grandRevenue}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

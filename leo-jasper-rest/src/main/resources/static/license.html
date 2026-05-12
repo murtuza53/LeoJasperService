@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoJasperService — admin / license registration</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔑</text></svg>">
+<style>
+  :root {
+    --fg:#1a1a1a; --muted:#6a6a6a; --bg:#fafafa; --card:#fff;
+    --border:#e2e2e2; --accent:#0066cc; --accent-hover:#0052a3;
+    --ok-bg:#e8f5ec; --ok-fg:#1f7a3a; --error-bg:#fff4f4; --error-fg:#b00020;
+    --warn-bg:#fff8e1; --warn-fg:#8a6d00;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04);
+  }
+  *,*::before,*::after { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         color:var(--fg); background:var(--bg); }
+  header.top-nav {
+    background:var(--card); border-bottom:1px solid var(--border);
+    padding:14px 32px; display:flex; justify-content:space-between;
+    align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .brand { font-weight:600; font-size:16px; display:flex; gap:8px; align-items:center; }
+  nav.tabs { display:flex; gap:4px; flex-wrap:wrap; }
+  nav.tabs a {
+    padding:7px 12px; border-radius:6px; text-decoration:none;
+    color:var(--muted); font-size:14px;
+  }
+  nav.tabs a:hover { background:#f4f4f7; color:var(--fg); }
+  nav.tabs a.active { background:var(--accent); color:#fff; }
+  .who { font-size:12px; color:var(--muted); }
+  .who button { margin-left:8px; }
+  main { padding:24px 32px; max-width:1200px; margin:0 auto; }
+  .card {
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:24px; box-shadow:var(--shadow); margin-bottom:20px;
+  }
+  h1 { font-size:22px; margin:0 0 4px; }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.04em;
+       color:var(--muted); margin:0 0 14px; font-weight:600; }
+  label { display:block; font-size:13px; font-weight:500; margin:14px 0 6px; }
+  input[type=text],input[type=password],select,textarea {
+    width:100%; padding:9px 11px; border:1px solid var(--border);
+    border-radius:7px; font:inherit; background:#fff;
+  }
+  textarea { min-height:80px; resize:vertical; font-size:13px;
+             font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+  button.primary {
+    margin-top:14px; padding:11px 18px; background:var(--accent);
+    color:#fff; border:none; border-radius:7px; font:inherit; font-weight:500;
+    cursor:pointer;
+  }
+  button.primary:hover { background:var(--accent-hover); }
+  button.primary:disabled { opacity:.55; cursor:wait; }
+  button.secondary {
+    padding:7px 12px; background:#fff; border:1px solid var(--border);
+    border-radius:6px; cursor:pointer; font:inherit; font-size:13px;
+  }
+  button.secondary:hover { background:#f4f4f7; }
+  button.danger {
+    padding:7px 12px; background:#fff; border:1px solid var(--error-fg);
+    color:var(--error-fg); border-radius:6px; cursor:pointer; font:inherit; font-size:13px;
+  }
+  button.danger:hover { background:var(--error-bg); }
+  .row-2 { display:grid; gap:14px; grid-template-columns:1fr 1fr; }
+  @media (max-width:780px) { .row-2 { grid-template-columns:1fr; } }
+  .banner {
+    border-radius:8px; padding:12px 16px; font-size:14px; margin-bottom:14px;
+    border:1px solid; display:flex; align-items:center; gap:10px;
+  }
+  .banner.ok    { background:var(--ok-bg);    border-color:var(--ok-fg);    color:var(--ok-fg); }
+  .banner.warn  { background:var(--warn-bg);  border-color:var(--warn-fg);  color:var(--warn-fg); }
+  .banner.error { background:var(--error-bg); border-color:var(--error-fg); color:var(--error-fg); }
+  table { border-collapse:collapse; width:100%; font-size:14px; margin-top:6px; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { background:#f9f9fb; font-size:13px; font-weight:600; }
+  code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+         font-size:12.5px; background:#f4f4f7; padding:1px 5px; border-radius:3px; }
+  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px;
+          background:#ececf2; color:var(--fg); }
+  .pill.scope-FULL   { background:#fde0e0; color:#a31515; }
+  .pill.scope-RENDER { background:#e6f1ff; color:#1e3a8a; }
+  .pill.scope-READ   { background:#f0f0f0; color:#444; }
+  .pill.disabled     { background:#444; color:#fff; }
+  .secret-box {
+    background:#1d2025; color:#e8e8ec; padding:12px 14px; border-radius:8px;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:13px;
+    word-break:break-all; margin-top:6px;
+  }
+  .secret-box code { background:transparent; color:#7ec699; padding:0; }
+  .toast {
+    position:fixed; bottom:24px; right:24px; padding:12px 18px;
+    background:var(--ok-fg); color:#fff; border-radius:8px; box-shadow:var(--shadow);
+    font-size:14px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:100;
+  }
+  .toast.show { opacity:1; }
+  .toast.error { background:var(--error-fg); }
+  details { margin-top:8px; }
+  summary { cursor:pointer; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+
+<header class="top-nav">
+  <div class="brand">🔑 LeoJasperService — admin</div>
+  <nav class="tabs" id="topNav">
+    <a href="/license.html"   data-tab="license"   class="active">License &amp; companies</a>
+    <a href="/assets.html"    data-tab="assets">Assets</a>
+    <a href="/"               data-tab="test">Template tester</a>
+    <a href="/synthesis.html" data-tab="synthesis">Synthesis</a>
+    <a href="/help.html"      data-tab="help">API docs</a>
+  </nav>
+  <div class="who" id="whoami">checking session…</div>
+</header>
+
+<main>
+
+<!-- ================ LOGIN ================ -->
+<section class="card" id="loginCard">
+  <h1>Sign in</h1>
+  <p style="color:var(--muted);font-size:14px;margin:4px 0 0">
+    Default credentials on first run: <code>admin</code> / <code>admin52</code>.
+    You'll be required to change the password before registering any company.
+  </p>
+  <div class="row-2">
+    <div>
+      <label for="loginUser">Username</label>
+      <input id="loginUser" type="text" value="admin" autocomplete="username">
+    </div>
+    <div>
+      <label for="loginPwd">Password</label>
+      <input id="loginPwd" type="password" autocomplete="current-password">
+    </div>
+  </div>
+  <details style="margin-top:14px">
+    <summary>Advanced — adopt an existing vault</summary>
+    <label for="loginVault" style="margin-top:10px">Vault path (optional)</label>
+    <input id="loginVault" type="text" placeholder="e.g. D:\leojasper-data — leave blank to use the default" autocomplete="off">
+    <p class="hint" style="font-size:12px;color:var(--muted);margin-top:6px">
+      Use this when pointing a fresh install at the assets folder from a
+      previous version. The folder must contain
+      <code>.leojasper/credentials.enc</code>; sign in with the
+      <strong>old admin password</strong> to take it over without overwriting.
+      Lost password = unrecoverable vault.
+    </p>
+  </details>
+  <button class="primary" id="loginBtn" type="button">Sign in</button>
+  <div id="loginErr" class="banner error" style="display:none;margin-top:14px"></div>
+</section>
+
+<!-- ================ POST-LOGIN: change password / set assets root / companies ================ -->
+<div id="adminArea" hidden>
+
+  <div id="banners"></div>
+
+  <!-- assets root picker -->
+  <section class="card">
+    <h2>Assets root folder</h2>
+    <p style="margin-top:0;font-size:14px;color:var(--muted)">
+      Per-company folders are created under this path as
+      <code>companies/&lt;company-slug&gt;-&lt;keyId6&gt;/</code>.
+      Pick a path you can back up regularly from your filesystem.
+    </p>
+    <div class="row-2">
+      <div>
+        <label>Absolute path</label>
+        <input id="assetsRoot" type="text" placeholder="C:\\leojasper-assets or /var/leojasper">
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button class="primary" id="setAssetsRootBtn" type="button">Set assets root</button>
+      </div>
+    </div>
+    <div class="banner ok" id="assetsRootOk" style="display:none">
+      <span>📂  Current assets root: <code id="assetsRootCurrent">—</code></span>
+    </div>
+  </section>
+
+  <!-- backup paths -->
+  <section class="card">
+    <h2>📦 Backup</h2>
+    <p style="margin-top:0;font-size:14px;color:var(--muted)">
+      The encrypted vault now lives <strong>inside</strong> the assets root —
+      so a single recursive backup of one folder covers the password, the
+      company registry, every uploaded asset, and audit logs. A redeploy of
+      the application will not touch this folder.
+    </p>
+    <table style="margin-top:8px">
+      <thead><tr><th>Path</th><th>Contents</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code id="bkAssetsRoot">—</code></td>
+          <td>
+            <strong>Back up this whole tree.</strong>
+            Contains:
+            <ul style="margin:4px 0 0;padding-left:18px">
+              <li><code>.leojasper/credentials.enc</code> — encrypted admin password + assets-root pointer</li>
+              <li><code>.leojasper/companies.enc</code> — encrypted list of companies (keyIds, hashed secrets, scopes)</li>
+              <li><code>companies/&lt;slug&gt;-&lt;keyId6&gt;/{images,templates,data,other,.meta}</code></li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <details style="margin-top:8px">
+      <summary>Vault file paths (for verification)</summary>
+      <table style="margin-top:6px">
+        <tr><td><code id="bkCredFile">—</code></td><td>credentials.enc</td></tr>
+        <tr><td><code id="bkCompFile">—</code></td><td>companies.enc</td></tr>
+      </table>
+    </details>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="secondary" id="copyBackupPaths" type="button">📋 Copy assets root path</button>
+      <button class="secondary" id="copyBackupScript" type="button">📋 Copy as backup script</button>
+    </div>
+    <details style="margin-top:10px">
+      <summary>Recovery scenarios</summary>
+      <ul style="font-size:13px;color:var(--muted);margin:8px 0 0;padding-left:18px">
+        <li><strong>Restore on a new machine:</strong> drop the two folders into the same paths,
+            start the service, log in with the original admin password — every company keeps its <code>keyId</code> and continues to work.</li>
+        <li><strong>Lost admin password:</strong> unrecoverable. AES-GCM + PBKDF2 has no backdoor. Bootstrap a fresh install (delete <code>.leojasper/</code>) and re-register companies.</li>
+        <li><strong>Lost a single asset within 30 days:</strong> not a restore problem — admin can recover from the per-company <code>.meta/trash/</code> via the company's row → <em>Trash</em>.</li>
+        <li><strong>Lost an asset older than 30 days:</strong> needs a backup snapshot from before the sweep.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- change password -->
+  <section class="card">
+    <h2>Change password</h2>
+    <div class="row-2">
+      <div>
+        <label>Current password</label>
+        <input id="curPwd" type="password" autocomplete="current-password">
+      </div>
+      <div>
+        <label>New password</label>
+        <input id="newPwd" type="password" autocomplete="new-password">
+      </div>
+    </div>
+    <button class="primary" id="changePwdBtn" type="button">Change password</button>
+    <p class="hint" style="font-size:12px;color:var(--muted);margin-top:6px">
+      Changes the encryption key for both <code>credentials.enc</code> and
+      <code>companies.enc</code>. Old password becomes invalid immediately.
+    </p>
+  </section>
+
+  <!-- companies -->
+  <section class="card">
+    <h2>Registered companies <span class="pill" id="companyCount">0</span></h2>
+
+    <details open>
+      <summary>Register a new company</summary>
+      <div class="row-2" style="margin-top:10px">
+        <div>
+          <label>Company name</label>
+          <input id="newCoName" type="text" placeholder="Acme Corp">
+        </div>
+        <div>
+          <label>Address</label>
+          <input id="newCoAddr" type="text" placeholder="123 Business Ave, City, ST">
+        </div>
+      </div>
+      <div class="row-2">
+        <div>
+          <label>License scope</label>
+          <select id="newCoScope">
+            <option value="FULL">FULL — assets CRUD, synthesis, render</option>
+            <option value="RENDER">RENDER — render only</option>
+            <option value="READ">READ — list/get only</option>
+          </select>
+        </div>
+        <div>
+          <label>HMAC required <span class="pill">tier 2</span></label>
+          <select id="newCoHmac">
+            <option value="false">No (use X-Key-Secret header)</option>
+            <option value="true">Yes (HMAC request signing — placeholder)</option>
+          </select>
+        </div>
+      </div>
+      <button class="primary" id="registerBtn" type="button">Register company &amp; issue license</button>
+    </details>
+
+    <h2 style="margin-top:24px">Companies</h2>
+    <div id="companyList">
+      <div style="color:var(--muted);font-size:14px;padding:14px 0">Loading…</div>
+    </div>
+  </section>
+
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- ================ JS ================ -->
+<script>
+const $ = (q) => document.querySelector(q);
+const BASE = location.origin;
+
+function showToast(msg, level="ok") {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.toggle("error", level==="error");
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+async function api(method, path, body) {
+  const init = { method, headers: { "Content-Type":"application/json" }, credentials:"include" };
+  if (body !== undefined) init.body = JSON.stringify(body);
+  const res = await fetch(BASE + path, init);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error(err.message || ("HTTP " + res.status));
+  }
+  if (res.status === 204) return null;
+  const ct = res.headers.get("content-type") || "";
+  return ct.includes("application/json") ? res.json() : res.text();
+}
+
+let banners = [];
+function renderBanners() {
+  $("#banners").innerHTML = banners
+    .map(b => `<div class="banner ${b.level}">${b.html}</div>`).join("");
+}
+function pushBanner(level, html, key) {
+  if (key) banners = banners.filter(b => b.key !== key);
+  banners.push({ level, html, key });
+  renderBanners();
+}
+function dropBanner(key) {
+  banners = banners.filter(b => b.key !== key);
+  renderBanners();
+}
+
+// ---------- session bootstrap ----------
+async function refreshStatus() {
+  try {
+    const s = await api("GET", "/api/admin/status");
+    $("#whoami").innerHTML = s.session
+      ? `<span style="color:var(--ok-fg)">●</span> signed in <button class="secondary" id="logoutBtn">Sign out</button>`
+      : "(not signed in)";
+    if (s.session) {
+      $("#logoutBtn").addEventListener("click", logout);
+      enterAdminArea(s);
+    } else {
+      exitAdminArea();
+    }
+    if (!s.hasCredentialsFile) {
+      pushBanner("warn",
+        `📄 No <code>credentials.enc</code> on disk yet — first-run mode. Default <code>admin / admin52</code> works for now; change the password to lock things down.`,
+        "first-run");
+    } else {
+      dropBanner("first-run");
+    }
+  } catch (e) {
+    $("#whoami").textContent = "(unreachable)";
+  }
+}
+
+function exitAdminArea() {
+  $("#loginCard").hidden = false;
+  $("#adminArea").hidden = true;
+}
+
+async function enterAdminArea(s) {
+  $("#loginCard").hidden = true;
+  $("#adminArea").hidden = false;
+  if (s.assetsRoot) {
+    $("#assetsRoot").value = s.assetsRoot;
+    $("#assetsRootCurrent").textContent = s.assetsRoot;
+    $("#assetsRootOk").style.display = "flex";
+  } else {
+    pushBanner("warn",
+      "📂 No assets root configured yet — set one before registering companies.",
+      "no-root");
+  }
+  if (s.backup) {
+    $("#bkCredFile").textContent  = s.backup.credentialsFile;
+    $("#bkCompFile").textContent  = s.backup.companiesFile;
+    $("#bkAssetsRoot").textContent = s.backup.assetsRoot;
+  }
+  await loadCompanies();
+}
+
+// ---------- backup helpers ----------
+function assetsRootPath() {
+  const p = $("#bkAssetsRoot").textContent;
+  return (p && p !== "—") ? p : null;
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.id === "copyBackupPaths") {
+    const p = assetsRootPath();
+    if (!p) { showToast("Path not loaded yet", "error"); return; }
+    navigator.clipboard.writeText(p);
+    showToast("Assets root copied — paste into your backup tool");
+  } else if (e.target.id === "copyBackupScript") {
+    const p = assetsRootPath();
+    if (!p) { showToast("Path not loaded yet", "error"); return; }
+    const dateExpr = "$(date +%Y%m%d-%H%M%S)";
+    const script =
+`#!/usr/bin/env bash
+# leojasper-backup.sh — full backup of LeoJasperService state.
+# The vault (.leojasper/credentials.enc + companies.enc) and every company's
+# asset folder live under one root. Snapshot it as a single tree.
+set -euo pipefail
+
+DEST="\${1:-/var/backups/leojasper}"
+mkdir -p "$DEST"
+ARCHIVE="$DEST/leojasper-${dateExpr}.tar.gz"
+
+tar czf "$ARCHIVE" "${p}"
+
+echo "Wrote $ARCHIVE  ($(du -h "$ARCHIVE" | cut -f1))"
+echo "Encrypted .enc files share the admin password — store that recoverable separately."
+`;
+    navigator.clipboard.writeText(script);
+    showToast("Backup script copied to clipboard");
+  }
+});
+
+// ---------- login / logout / password ----------
+$("#loginBtn").addEventListener("click", async () => {
+  $("#loginErr").style.display = "none";
+  $("#loginBtn").disabled = true;
+  try {
+    const r = await api("POST", "/api/admin/login",
+      { username: $("#loginUser").value,
+        password: $("#loginPwd").value,
+        vaultPath: $("#loginVault").value.trim() });
+    showToast("Signed in");
+    if (r.mustChangePassword) {
+      pushBanner("warn",
+        "🔐 You're using the default password — change it before registering any company.",
+        "must-change");
+    }
+    await refreshStatus();
+  } catch (e) {
+    $("#loginErr").textContent = e.message;
+    $("#loginErr").style.display = "block";
+  } finally {
+    $("#loginBtn").disabled = false;
+  }
+});
+
+async function logout() {
+  await api("POST", "/api/admin/logout");
+  showToast("Signed out");
+  banners = [];
+  renderBanners();
+  await refreshStatus();
+}
+
+$("#changePwdBtn").addEventListener("click", async () => {
+  const cur = $("#curPwd").value, neu = $("#newPwd").value;
+  if (!cur || !neu) { showToast("Both passwords required", "error"); return; }
+  try {
+    await api("POST", "/api/admin/change-password",
+      { currentPassword: cur, newPassword: neu });
+    $("#curPwd").value = ""; $("#newPwd").value = "";
+    dropBanner("must-change");
+    showToast("Password changed");
+  } catch (e) {
+    showToast(e.message, "error");
+  }
+});
+
+// ---------- assets root ----------
+$("#setAssetsRootBtn").addEventListener("click", async () => {
+  const path = $("#assetsRoot").value.trim();
+  if (!path) { showToast("Enter a path", "error"); return; }
+  try {
+    const r = await api("POST", "/api/admin/assets-root", { path });
+    $("#assetsRootCurrent").textContent = r.assetsRoot;
+    $("#assetsRootOk").style.display = "flex";
+    dropBanner("no-root");
+    showToast("Assets root saved");
+  } catch (e) {
+    showToast(e.message, "error");
+  }
+});
+
+// ---------- companies ----------
+async function loadCompanies() {
+  try {
+    const list = await api("GET", "/api/admin/companies");
+    $("#companyCount").textContent = list.length;
+    if (!list.length) {
+      $("#companyList").innerHTML =
+        '<div style="color:var(--muted);font-size:14px;padding:14px 0">No companies yet.</div>';
+      return;
+    }
+    let html = `<table>
+      <thead><tr><th>Name</th><th>keyId</th><th>Scope</th><th>Folder</th><th>Created</th><th>Actions</th></tr></thead><tbody>`;
+    for (const c of list) {
+      html += `<tr>
+        <td><strong>${escapeHtml(c.name)}</strong>${c.disabled ? ' <span class="pill disabled">disabled</span>' : ""}<br>
+            <span style="color:var(--muted);font-size:12px">${escapeHtml(c.address || "")}</span></td>
+        <td><code>${escapeHtml(c.keyId)}</code></td>
+        <td><span class="pill scope-${c.scope}">${escapeHtml(c.scope)}</span>${c.hmacRequired ? ' <span class="pill">HMAC</span>' : ""}</td>
+        <td><code>${escapeHtml(c.folderName)}</code></td>
+        <td style="color:var(--muted);font-size:12px">${escapeHtml((c.createdAt || "").slice(0,16).replace("T"," "))}</td>
+        <td>
+          <button class="secondary"  data-act="rotate"  data-id="${c.keyId}">Rotate key</button>
+          <button class="secondary"  data-act="audit"   data-id="${c.keyId}">Audit</button>
+          ${c.disabled
+            ? `<button class="secondary" data-act="enable"  data-id="${c.keyId}">Enable</button>`
+            : `<button class="danger"    data-act="disable" data-id="${c.keyId}">Disable</button>`}
+        </td>
+      </tr>`;
+    }
+    html += "</tbody></table>";
+    $("#companyList").innerHTML = html;
+    $("#companyList").querySelectorAll("button[data-act]").forEach(btn => {
+      btn.addEventListener("click", () => companyAction(btn.dataset.act, btn.dataset.id));
+    });
+  } catch (e) {
+    $("#companyList").innerHTML =
+      `<div class="banner error">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+$("#registerBtn").addEventListener("click", async () => {
+  const name  = $("#newCoName").value.trim();
+  const addr  = $("#newCoAddr").value.trim();
+  const scope = $("#newCoScope").value;
+  const hmac  = $("#newCoHmac").value === "true";
+  if (!name) { showToast("Company name required", "error"); return; }
+  try {
+    const r = await api("POST", "/api/admin/companies",
+      { name, address: addr, scope, hmacRequired: hmac });
+    showToast("Company registered");
+    showSecretOnce(r);
+    $("#newCoName").value = ""; $("#newCoAddr").value = "";
+    await loadCompanies();
+  } catch (e) {
+    showToast(e.message, "error");
+  }
+});
+
+async function companyAction(act, keyId) {
+  try {
+    if (act === "rotate") {
+      if (!confirm(`Rotate license secret for keyId ${keyId}? Old secret stops working immediately.`)) return;
+      const r = await api("POST", `/api/admin/companies/${keyId}/rotate`);
+      showSecretOnce({ keyId, secret: r.secret, name: "(rotated)" });
+      showToast("Key rotated");
+    } else if (act === "disable") {
+      if (!confirm(`Disable keyId ${keyId}? All API calls under it will fail until re-enabled.`)) return;
+      await api("POST", `/api/admin/companies/${keyId}/disable`);
+      showToast("Disabled");
+      await loadCompanies();
+    } else if (act === "enable") {
+      await api("POST", `/api/admin/companies/${keyId}/enable`);
+      showToast("Enabled");
+      await loadCompanies();
+    } else if (act === "audit") {
+      const items = await api("GET", `/api/admin/companies/${keyId}/audit?limit=50`);
+      showAudit(keyId, items);
+    }
+  } catch (e) {
+    showToast(e.message, "error");
+  }
+}
+
+function showSecretOnce(r) {
+  const dlg = document.createElement("div");
+  dlg.className = "card";
+  dlg.style.cssText = "position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:560px;z-index:200;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.18)";
+  dlg.innerHTML = `
+    <h2 style="color:var(--accent)">License credentials — copy now</h2>
+    <p style="font-size:14px;margin:0 0 8px">
+      <strong>${escapeHtml(r.name || r.keyId)}</strong> &middot; the secret below is shown <strong>once</strong>.
+      Closing this dialog without copying means you'll have to rotate the key.
+    </p>
+    <label>Key id (public)</label>
+    <div class="secret-box"><code>${escapeHtml(r.keyId)}</code></div>
+    <label>Secret (private — store securely)</label>
+    <div class="secret-box"><code>${escapeHtml(r.secret)}</code></div>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button class="secondary" id="copyBoth">📋 Copy both</button>
+      <button class="primary" id="closeSecret" style="margin-top:0">I have copied it — close</button>
+    </div>`;
+  document.body.appendChild(dlg);
+  dlg.querySelector("#copyBoth").addEventListener("click", () => {
+    navigator.clipboard.writeText(`X-Key-Id: ${r.keyId}\nX-Key-Secret: ${r.secret}`);
+    showToast("Copied to clipboard");
+  });
+  dlg.querySelector("#closeSecret").addEventListener("click", () => dlg.remove());
+}
+
+function showAudit(keyId, items) {
+  const dlg = document.createElement("div");
+  dlg.className = "card";
+  dlg.style.cssText = "position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:760px;max-height:80vh;overflow:auto;z-index:200;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.18)";
+  let body = `<h2>Audit for keyId <code>${escapeHtml(keyId)}</code> (newest first)</h2>`;
+  if (!items.length) {
+    body += "<div style='color:var(--muted)'>No entries yet.</div>";
+  } else {
+    body += `<table><thead><tr><th>ts</th><th>method</th><th>path</th><th>status</th><th>ip</th><th>ms</th></tr></thead><tbody>`;
+    for (const it of items) {
+      body += `<tr>
+        <td style="font-size:12px;color:var(--muted)">${escapeHtml(String(it.ts || "").replace("T"," ").slice(0,19))}</td>
+        <td>${escapeHtml(String(it.method || ""))}</td>
+        <td><code style="font-size:12px">${escapeHtml(String(it.path || ""))}</code></td>
+        <td>${escapeHtml(String(it.status || ""))}</td>
+        <td style="font-size:12px">${escapeHtml(String(it.ip || ""))}</td>
+        <td style="font-size:12px">${escapeHtml(String(it.elapsedMs || ""))}</td>
+      </tr>`;
+    }
+    body += "</tbody></table>";
+  }
+  body += `<div style="margin-top:14px"><button class="secondary" id="closeAudit">Close</button></div>`;
+  dlg.innerHTML = body;
+  document.body.appendChild(dlg);
+  dlg.querySelector("#closeAudit").addEventListener("click", () => dlg.remove());
+}
+
+// init
+refreshStatus();
+</script>
+
+</body>
+</html>

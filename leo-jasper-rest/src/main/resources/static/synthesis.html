@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoJasperService — template synthesis</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>✨</text></svg>">
+<style>
+  :root {
+    --fg: #1a1a1a;
+    --muted: #6a6a6a;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --border: #e2e2e2;
+    --accent: #0066cc;
+    --accent-hover: #0052a3;
+    --error-bg: #fff4f4;
+    --error-fg: #b00020;
+    --success-bg: #f1faf3;
+    --success-fg: #1f7a3a;
+    --code-bg: #1d2025;
+    --code-fg: #e8e8ec;
+    --code-muted: #8b94a3;
+    --code-out: #7ec699;
+    --code-in:  #80aaff;
+    --code-err: #ff8585;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg); background: var(--bg);
+  }
+  header {
+    padding: 22px 32px; border-bottom: 1px solid var(--border); background: var(--card);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; flex-wrap: wrap;
+  }
+  h1 { font-size: 20px; margin: 0; font-weight: 600; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  main {
+    display: flex; flex-direction: column; gap: 20px;
+    padding: 24px 32px; max-width: 1500px; margin: 0 auto;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .row-2 { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  @media (max-width: 900px) { .row-2 { grid-template-columns: 1fr; } }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
+       color: var(--muted); margin: 0 0 14px; font-weight: 600; }
+  h2 .actions { float: right; display: flex; gap: 6px; text-transform: none; letter-spacing: 0; }
+  label { display: block; font-size: 13px; font-weight: 500; margin: 14px 0 6px; }
+  input[type="text"], input[type="file"], select, textarea {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font: inherit; background: #fff;
+  }
+  textarea { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+             font-size: 13px; min-height: 110px; resize: vertical; }
+  input[type="file"] { padding: 6px; }
+  button.primary {
+    margin-top: 18px; padding: 11px 18px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 7px; font: inherit; font-weight: 500;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  button.primary:hover { background: var(--accent-hover); }
+  button.primary:disabled { opacity: .55; cursor: wait; }
+  button.secondary, .header-link {
+    padding: 7px 12px; background: #fff; border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer; font: inherit; font-size: 13px;
+    color: var(--fg); text-decoration: none;
+    display: inline-flex; gap: 6px; align-items: center;
+  }
+  button.secondary:hover, .header-link:hover { background: #f4f4f7; }
+  .header-link.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
+  .header-link.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .pill {
+    display: inline-block; font-size: 11px; padding: 1px 8px;
+    border-radius: 999px; background: #ececf2; color: var(--fg); margin-left: 6px;
+  }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+
+  .placeholder {
+    color: var(--muted); text-align: center; padding: 50px 20px;
+    border: 1px dashed var(--border); border-radius: 8px; font-size: 14px;
+  }
+  .error-card {
+    border: 1px solid var(--error-fg); background: var(--error-bg);
+    border-radius: 8px; padding: 16px;
+  }
+  .success-card {
+    border: 1px solid var(--success-fg); background: var(--success-bg);
+    border-radius: 8px; padding: 16px;
+  }
+  .success-card a.test-link {
+    display: inline-block; margin-top: 8px;
+    background: var(--success-fg); color: #fff;
+    padding: 9px 16px; border-radius: 6px; text-decoration: none;
+    font-weight: 500; font-size: 14px;
+  }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 4px 8px; font-size: 12px; }
+  thead th { background: #f4f4f7; }
+  tbody tr:nth-child(even) { background: #fafafa; }
+  pre { margin: 0; }
+
+  /* ===== Activity log (matches test page) ===== */
+  .log {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: 8px; padding: 0;
+    font: 12.5px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    height: 340px; overflow: auto;
+    border: 1px solid #2a2e36;
+  }
+  .log:empty::before {
+    content: "No requests yet."; display: block; padding: 22px;
+    color: var(--code-muted); font-style: italic; text-align: center;
+  }
+  .log-entry { border-bottom: 1px solid #2a2e36; padding: 10px 14px; }
+  .log-entry:first-child { background: #232730; }
+  .log-entry .head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .log-entry .ts    { color: var(--code-muted); font-size: 11.5px; }
+  .log-entry .arrow { font-weight: 700; }
+  .log-entry .arrow.out { color: var(--code-out); }
+  .log-entry .arrow.in  { color: var(--code-in); }
+  .log-entry .arrow.err { color: var(--code-err); }
+  .log-entry .arrow.note{ color: #d6c25e; }
+  .log-entry .title { color: var(--code-fg); }
+  .log-entry .status-200 { color: var(--code-out); }
+  .log-entry .status-bad { color: var(--code-err); }
+  .log-entry .copy-line {
+    margin-left: auto; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; border: 1px solid #3a3f48;
+    background: rgba(255,255,255,.04); color: #c7cad1; cursor: pointer;
+  }
+  .log-entry .copy-line:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .log-entry .copy-line.copied { background: var(--success-fg); color: #fff; border-color: var(--success-fg); }
+  .log-entry .details {
+    margin: 6px 0 0; padding: 0;
+    color: var(--code-muted); white-space: pre-wrap; word-break: break-word;
+  }
+  .log-entry .details .k { color: #a9b3c2; }
+  .log-entry .details .v { color: #e8e8ec; }
+  .log-entry .details .body {
+    color: #e0e6f0; background: rgba(255,255,255,.04);
+    border-radius: 4px; padding: 6px 8px; margin-top: 4px;
+    display: block; white-space: pre-wrap;
+  }
+
+  /* DTO match badge */
+  .dto-match {
+    background: #eef5ff; border-radius: 6px; padding: 8px 10px;
+    font-size: 12px; margin-bottom: 10px;
+  }
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 12px 18px; background: var(--success-fg); color: #fff;
+    border-radius: 8px; box-shadow: var(--shadow);
+    font-size: 14px; opacity: 0; transition: opacity .25s;
+    pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--error-fg); }
+  /* embedded asset thumbnails */
+  .assets-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .asset-tile {
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px;
+    font-size: 11px; text-align: center;
+  }
+  .asset-tile img { max-height: 60px; max-width: 120px; display: block; margin: 0 auto 4px; }
+  .asset-tile a { color: var(--accent); text-decoration: none; }
+  .asset-tile a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>✨ Template synthesis
+      <span class="pill" id="analyzerPill">analyzer: …</span>
+      <span class="pill" id="companyPill" style="background:#eef5ff;color:#1e3a8a;cursor:pointer" title="Click to set license credentials">no company</span>
+    </h1>
+    <p>Upload a PDF or image of an existing report. The vision model proposes a JRXML which is saved as a new template.</p>
+  </div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+    <a href="/license.html"   class="header-link" title="Admin / company management">🔑 License</a>
+    <a href="/assets.html"    class="header-link" title="Manage assets">📁 Assets</a>
+    <a href="/"               class="header-link" title="Template tester">📄 Tester</a>
+    <a href="/help.html" target="_blank" rel="noopener" class="header-link primary"
+       title="Open API client integration guide in a new tab">
+      📘 API docs &nbsp;↗
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- License credentials -->
+  <section class="card" id="credsCard">
+    <h2>
+      License credentials
+      <span class="pill" id="credsState" style="background:#fde0e0;color:#a31515">not set</span>
+    </h2>
+    <p style="margin-top:0;font-size:13px;color:var(--muted)">
+      Synthesis is a write-scope operation. Paste the
+      <code>X-Key-Id</code> + <code>X-Key-Secret</code> issued by the admin
+      on the <a href="/license.html">license page</a>. They are stored in this
+      browser's <code>localStorage</code> and sent on every API call.
+    </p>
+    <div class="row-2" style="gap:14px">
+      <div>
+        <label for="credKeyId">X-Key-Id</label>
+        <input id="credKeyId" type="text" placeholder="e.g. fDjNzEgTmJy-MK_j6fkWPg">
+      </div>
+      <div>
+        <label for="credKeySecret">X-Key-Secret</label>
+        <input id="credKeySecret" type="password" placeholder="paste the secret">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+      <button class="primary" id="saveCredsBtn" type="button">Save credentials</button>
+      <button class="secondary" id="clearCredsBtn" type="button">Clear</button>
+      <button class="secondary" id="hideCredsBtn" type="button" style="margin-left:auto" hidden>Hide</button>
+    </div>
+  </section>
+
+  <!-- Activity log -->
+  <section class="card">
+    <h2>
+      Activity log <span class="pill" id="logCount">0</span>
+      <span class="actions">
+        <button class="secondary" id="copyLogBtn" type="button">📋 Copy</button>
+        <button class="secondary" id="clearLogBtn" type="button">Clear</button>
+      </span>
+    </h2>
+    <div class="log" id="log"></div>
+  </section>
+
+  <div class="row-2">
+
+    <!-- Form -->
+    <section class="card">
+      <h2>1 — Upload &amp; analyze</h2>
+
+      <label>Source file (PDF or PNG/JPG)</label>
+      <input type="file" id="synFile"
+             accept=".pdf,application/pdf,image/png,image/jpeg,image/webp">
+      <div class="hint">PDFs are rasterized to 150 DPI before being sent to the model.
+        Embedded images are pulled out separately so you can reuse logos / headers.</div>
+
+      <label>Hint to the model (optional)</label>
+      <input type="text" id="synHint"
+             placeholder='e.g. "this is a sales invoice with one items table"'>
+
+      <details style="margin-top:10px">
+        <summary>Java DTO source (optional — fields/types will be matched)</summary>
+        <textarea id="synDto" placeholder='public class InvoiceLine {
+    private String description;
+    private int quantity;
+    private java.math.BigDecimal unitPrice;
+    private java.math.BigDecimal amount;
+    // getters/setters omitted
+}'></textarea>
+      </details>
+
+      <button class="primary" id="analyzeBtn" type="button">
+        <span id="analyzeLabel">Analyze</span>
+      </button>
+
+      <hr style="margin:24px 0; border:none; border-top:1px solid var(--border)">
+
+      <h2>2 — Review &amp; save</h2>
+      <label for="synTemplateId">Save as template id</label>
+      <input type="text" id="synTemplateId" placeholder="e.g. invoice-from-pdf">
+      <div class="hint">Template ids are slugified — lowercase letters, digits, hyphens.</div>
+
+      <button class="primary" id="saveBtn" type="button" disabled>
+        <span id="saveLabel">Save as template</span>
+      </button>
+    </section>
+
+    <!-- Result -->
+    <section class="card">
+      <h2>Detected layout</h2>
+      <div id="summary">
+        <div class="placeholder">Upload a file and click Analyze.</div>
+      </div>
+
+      <h2 style="margin-top:24px">Generated JRXML</h2>
+      <div id="jrxmlBox">
+        <div class="placeholder">Will appear after Save.</div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg, level = "ok") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.toggle("error", level === "error");
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove("show"), 3500);
+}
+</script>
+<script>
+const BASE = location.origin;
+const $    = (q) => document.querySelector(q);
+const ts   = () => {
+  const d = new Date();
+  return d.toLocaleTimeString([], { hour12: false }) +
+         "." + String(d.getMilliseconds()).padStart(3, "0");
+};
+
+let lastAnalysis = null;
+let logEntries = [];
+
+// ====================================================================
+// Activity log (verbose, matches test page)
+// ====================================================================
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function logEntry(kind, head, details) {
+  const arrow = kind === "out" ? "→" : kind === "in" ? "←" : kind === "err" ? "✗" : "•";
+  const time  = ts();
+
+  const flatText = `[${time}] ${arrow} ${head.replace(/<[^>]+>/g, "")}\n` +
+    (details && details.length ? details.map(l =>
+       "    " + (typeof l === "string" ? l : (l.html || "").replace(/<[^>]+>/g, ""))
+    ).join("\n") + "\n" : "");
+  logEntries.push(flatText);
+
+  const div = document.createElement("div");
+  div.className = "log-entry";
+  let html = `<div class="head">
+      <span class="ts">${escapeHtml(time)}</span>
+      <span class="arrow ${kind}">${arrow}</span>
+      <span class="title">${head}</span>
+      <button class="copy-line" data-flat>Copy</button>
+    </div>`;
+  if (details && details.length) {
+    html += `<div class="details">${details.map(l =>
+      typeof l === "string" ? escapeHtml(l) : l.html
+    ).join("\n")}</div>`;
+  }
+  div.innerHTML = html;
+  div.querySelector(".copy-line").addEventListener("click", e => {
+    navigator.clipboard.writeText(flatText).then(() => {
+      const b = e.currentTarget;
+      b.textContent = "✓"; b.classList.add("copied");
+      setTimeout(() => { b.textContent = "Copy"; b.classList.remove("copied"); }, 1200);
+    });
+  });
+
+  $("#log").prepend(div);
+  $("#logCount").textContent = $("#log").children.length;
+}
+
+function kv(key, value) {
+  return { html: `<span class="k">${escapeHtml(key)}:</span> <span class="v">${escapeHtml(value)}</span>` };
+}
+function bodyLine(label, body) {
+  return { html: `<span class="k">${escapeHtml(label)}:</span>\n<span class="body">${escapeHtml(body)}</span>` };
+}
+
+function previewString(s, max = 240) {
+  if (s.length <= max) return s;
+  return s.slice(0, max) + ` … [+${s.length - max} chars]`;
+}
+
+// Inject X-Key-Id + X-Key-Secret on /api/* requests (skip /api/admin/* and /api/auth/*).
+function injectAuthHeaders(url, init) {
+  const path = url.startsWith(BASE) ? url.slice(BASE.length) : url;
+  if (!path.startsWith("/api/") || path.startsWith("/api/admin") || path.startsWith("/api/auth")) {
+    return init;
+  }
+  const creds = (() => { try { return JSON.parse(localStorage.getItem("leojasper.assets-creds") || "null"); } catch { return null; } })();
+  if (!creds) return init;
+  const headers = init.headers instanceof Headers
+      ? Object.fromEntries(init.headers.entries())
+      : Object.assign({}, init.headers || {});
+  if (creds.keyId)     headers["X-Key-Id"]     = creds.keyId;
+  if (creds.keySecret) headers["X-Key-Secret"] = creds.keySecret;
+  return Object.assign({}, init, { headers });
+}
+
+async function loggedFetch(url, init = {}) {
+  init = injectAuthHeaders(url, init);
+  const t0 = performance.now();
+  const method = (init.method || "GET").toUpperCase();
+  const path = url.startsWith(BASE) ? url.slice(BASE.length) : url;
+
+  const reqDetails = [];
+  if (init.body instanceof FormData) {
+    reqDetails.push(kv("Content-Type", "multipart/form-data"));
+    for (const [k, v] of init.body.entries()) {
+      if (v instanceof File) {
+        reqDetails.push(kv(k, `file "${v.name}" — ${v.size} bytes — ${v.type || "application/octet-stream"}`));
+      } else if (v instanceof Blob) {
+        reqDetails.push(kv(k, `blob — ${v.size} bytes — ${v.type || "application/octet-stream"}`));
+      } else {
+        const s = String(v);
+        reqDetails.push(kv(k, previewString(s) + ` (${s.length} bytes)`));
+      }
+    }
+  } else if (init.body) {
+    const len = (init.body.length || init.body.size || 0);
+    reqDetails.push(kv("body", `${len} bytes`));
+  }
+  if (init.headers) {
+    for (const [k, v] of Object.entries(init.headers)) reqDetails.push(kv(k, v));
+  }
+  logEntry("out", `<strong>${method}</strong> <code>${escapeHtml(path)}</code>`, reqDetails);
+
+  let res, error;
+  try { res = await fetch(url, init); }
+  catch (e) { error = e; }
+  const ms = Math.round(performance.now() - t0);
+  if (error) {
+    logEntry("err", `<strong>${method}</strong> ${escapeHtml(path)} — network error`,
+             [kv("error", error.message), kv("elapsed", `${ms} ms`)]);
+    throw error;
+  }
+
+  const ct = res.headers.get("content-type") || "";
+  const cd = res.headers.get("content-disposition");
+  const cl = res.headers.get("content-length");
+
+  const peek = res.clone();
+  let bodyDesc;
+  if (ct.includes("application/json") || ct.startsWith("text/")) {
+    const txt = await peek.text();
+    bodyDesc = bodyLine(`body (${txt.length} bytes, ${ct})`, previewString(txt, 800));
+  } else {
+    const ab = await peek.arrayBuffer();
+    const head = new Uint8Array(ab.slice(0, Math.min(8, ab.byteLength)));
+    const hex  = Array.from(head).map(b => b.toString(16).padStart(2, "0")).join(" ");
+    bodyDesc = bodyLine(`body (${ab.byteLength} bytes, ${ct})`, `binary  — first bytes: ${hex}`);
+  }
+
+  const resDetails = [
+    kv("status", `${res.status} ${res.statusText}`),
+    kv("elapsed", `${ms} ms`),
+  ];
+  if (cl) resDetails.push(kv("Content-Length", cl));
+  if (cd) resDetails.push(kv("Content-Disposition", cd));
+  resDetails.push(bodyDesc);
+
+  const headHtml = `<span class="${res.ok ? "status-200" : "status-bad"}">${res.status}</span> ` +
+                   escapeHtml(res.statusText) + " ← " +
+                   `<strong>${method}</strong> <code>${escapeHtml(path)}</code>`;
+  logEntry(res.ok ? "in" : "err", headHtml, resDetails);
+  return res;
+}
+
+// ====================================================================
+// License credentials — visible block + header pill
+// ====================================================================
+const CREDS_KEY = "leojasper.assets-creds";
+function readCreds() {
+  try { return JSON.parse(localStorage.getItem(CREDS_KEY) || "null"); } catch { return null; }
+}
+function writeCreds(creds) {
+  localStorage.setItem(CREDS_KEY, JSON.stringify(creds));
+}
+function clearCreds() {
+  localStorage.removeItem(CREDS_KEY);
+}
+
+function refreshCredsUi() {
+  const creds = readCreds();
+  const have  = !!(creds && creds.keyId && creds.keySecret);
+  // header pill
+  const pill = $("#companyPill");
+  if (have) {
+    pill.textContent = "company " + creds.keyId.slice(0, 8) + "…";
+    pill.style.background = "#d6e8ff";
+  } else {
+    pill.textContent = "no company";
+    pill.style.background = "#eef5ff";
+  }
+  // creds card state
+  $("#credsState").textContent = have ? "active" : "not set";
+  $("#credsState").style.background = have ? "#d6f1de" : "#fde0e0";
+  $("#credsState").style.color      = have ? "#0e5b29" : "#a31515";
+  $("#credKeyId").value     = creds?.keyId     || "";
+  $("#credKeySecret").value = creds?.keySecret || "";
+  $("#hideCredsBtn").hidden = !have;
+}
+
+$("#saveCredsBtn").addEventListener("click", () => {
+  const id = $("#credKeyId").value.trim();
+  const sec = $("#credKeySecret").value.trim();
+  if (!id || !sec) { alert("Both X-Key-Id and X-Key-Secret are required."); return; }
+  writeCreds({ keyId: id, keySecret: sec });
+  refreshCredsUi();
+  // Re-bootstrap so /api/synthesis/info now succeeds.
+  bootstrapInfo();
+  logEntry("note", `License credentials saved (keyId <code>${escapeHtml(id.slice(0,8))}…</code>) — ready to analyze.`, []);
+});
+
+$("#clearCredsBtn").addEventListener("click", () => {
+  clearCreds();
+  refreshCredsUi();
+  logEntry("note", "License credentials cleared.", []);
+});
+
+$("#hideCredsBtn").addEventListener("click", () => {
+  $("#credsCard").style.display = "none";
+});
+
+$("#companyPill").addEventListener("click", () => {
+  $("#credsCard").style.display = "";
+  $("#credKeyId").focus();
+});
+
+refreshCredsUi();
+
+async function bootstrapInfo() {
+  if (!readCreds()) {
+    $("#analyzerPill").textContent = "analyzer: (set credentials first)";
+    return;
+  }
+  try {
+    const r = await loggedFetch(`${BASE}/api/synthesis/info`);
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ message: r.statusText }));
+      $("#analyzerPill").textContent = "analyzer: error";
+      logEntry("err", "Could not load /api/synthesis/info",
+               [kv("message", err.message || ("HTTP " + r.status))]);
+      return;
+    }
+    const j = await r.json();
+    $("#analyzerPill").textContent = "analyzer: " + j.analyzer;
+  } catch (e) {
+    $("#analyzerPill").textContent = "analyzer: (unavailable)";
+  }
+}
+
+// ====================================================================
+// Bootstrap
+// ====================================================================
+bootstrapInfo();
+
+// ====================================================================
+// Slugify for template id
+// ====================================================================
+function slugify(s) {
+  return String(s).toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/^-+|-+$/g, "")
+                  .slice(0, 40);
+}
+
+// ====================================================================
+// Analyze
+// ====================================================================
+function requireCreds() {
+  if (!readCreds()) {
+    $("#credsCard").style.display = "";
+    $("#credKeyId").focus();
+    showToast("Set X-Key-Id + Secret first (above)", "error");
+    return false;
+  }
+  return true;
+}
+
+$("#analyzeBtn").addEventListener("click", async () => {
+  if (!requireCreds()) return;
+  const f = $("#synFile").files[0];
+  if (!f) { alert("Choose a PDF or image first."); return; }
+
+  const fd = new FormData();
+  fd.append("file", f);
+  if ($("#synHint").value.trim()) fd.append("hint", $("#synHint").value);
+  if ($("#synDto").value.trim())  fd.append("dtoSource", $("#synDto").value);
+
+  setBusy("analyze", true);
+  $("#summary").innerHTML = '<div class="placeholder">Analyzing… this can take 5–30 s for the first call.</div>';
+  try {
+    const res = await loggedFetch(`${BASE}/api/synthesis/analyze`, { method: "POST", body: fd });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(err.message || "Analyze failed");
+    }
+    lastAnalysis = await res.json();
+    renderAnalysis(lastAnalysis);
+    $("#saveBtn").disabled = false;
+    if (!$("#synTemplateId").value && lastAnalysis.layout?.title) {
+      $("#synTemplateId").value = slugify(lastAnalysis.layout.title);
+    }
+    logEntry("note", `<span style="color:#7ec699">✓</span> Analysis complete — ${lastAnalysis.elapsedMs} ms, ` +
+                     `${(lastAnalysis.layout?.parameters || []).length} parameters, ` +
+                     `${(lastAnalysis.layout?.fields || []).length} fields, ` +
+                     `${(lastAnalysis.embeddedAssets || []).length} embedded assets`, []);
+  } catch (e) {
+    $("#summary").innerHTML = `<div class="error-card"><strong>${escapeHtml(e.message)}</strong></div>`;
+    logEntry("err", "Analyze failed", [kv("message", e.message)]);
+  } finally {
+    setBusy("analyze", false);
+  }
+});
+
+function renderAnalysis(r) {
+  const lay = r.layout || {};
+  const params = lay.parameters || [];
+  const fields = lay.fields || [];
+  const cols   = lay.tableColumns || [];
+  const out = [];
+
+  if (r.preview) {
+    out.push(`<div style="margin-bottom:10px"><img src="${r.preview}" style="max-width:100%;border:1px solid var(--border);border-radius:6px"/></div>`);
+  }
+  out.push(`<div style="margin-bottom:8px;font-size:13px"><strong>Title:</strong> ${escapeHtml(lay.title || "(none)")}
+            &middot; <span style="color:var(--muted)">analyzer ${escapeHtml(r.analyzer)} &middot; ${r.elapsedMs} ms</span></div>`);
+
+  if (r.dtoMatch) {
+    const m = r.dtoMatch;
+    const lines = [];
+    if (m.fieldRenames?.length) lines.push(`<strong>field renames:</strong> ${m.fieldRenames.map(escapeHtml).join(", ")}`);
+    if (m.paramRenames?.length) lines.push(`<strong>param renames:</strong> ${m.paramRenames.map(escapeHtml).join(", ")}`);
+    if (m.unmatchedFields?.length) lines.push(`<span style="color:var(--muted)">unmatched: ${m.unmatchedFields.map(escapeHtml).join(", ")}</span>`);
+    if (lines.length) out.push(`<div class="dto-match">${lines.join("<br>")}</div>`);
+  }
+
+  out.push(`<div style="font-size:12px;font-weight:600;margin-top:8px">Parameters (${params.length})</div>`);
+  out.push(`<table><thead><tr><th>name</th><th>type</th><th>sample</th></tr></thead><tbody>`);
+  for (const p of params) {
+    out.push(`<tr><td><code>${escapeHtml(p.name)}</code></td>
+                  <td style="color:var(--muted)">${escapeHtml((p.type || '').replace('java.lang.',''))}</td>
+                  <td>${escapeHtml(p.sampleValue || '')}</td></tr>`);
+  }
+  out.push("</tbody></table>");
+
+  out.push(`<div style="font-size:12px;font-weight:600;margin-top:12px">Fields (${fields.length})${
+    cols.length ? ` &middot; ${cols.length} table column(s)` : ""}</div>`);
+  out.push(`<table><thead><tr><th>name</th><th>type</th><th>sample</th></tr></thead><tbody>`);
+  for (const f of fields) {
+    out.push(`<tr><td><code>${escapeHtml(f.name)}</code></td>
+                  <td style="color:var(--muted)">${escapeHtml((f.type || '').replace('java.lang.',''))}</td>
+                  <td>${escapeHtml(f.sampleValue || '')}</td></tr>`);
+  }
+  out.push("</tbody></table>");
+
+  if (r.embeddedAssets?.length) {
+    out.push(`<div style="font-size:12px;font-weight:600;margin-top:12px">Embedded assets (${r.embeddedAssets.length})</div>`);
+    out.push(`<div class="assets-strip">`);
+    for (const a of r.embeddedAssets) {
+      const src = r.embeddedAssetBytes?.[a.name];
+      out.push(`<div class="asset-tile">`);
+      if (src) out.push(`<img src="${src}"/>`);
+      out.push(`<code>${escapeHtml(a.name)}</code><br>
+                <span style="color:var(--muted)">${a.width}×${a.height}, ${a.size} B</span>
+                </div>`);
+    }
+    out.push(`</div>`);
+    out.push(`<div class="hint" style="margin-top:6px">Saved with the template; downloadable at <code>/api/synthesis/{id}/assets/{name}</code>.</div>`);
+  }
+
+  $("#summary").innerHTML = out.join("");
+}
+
+// ====================================================================
+// Save
+// ====================================================================
+$("#saveBtn").addEventListener("click", async () => {
+  if (!requireCreds()) return;
+  if (!lastAnalysis) { alert("Analyze first."); return; }
+  let id = $("#synTemplateId").value.trim();
+  if (!id) { alert("Enter a template id."); return; }
+  id = slugify(id);
+  $("#synTemplateId").value = id;
+
+  const assets = {};
+  if (lastAnalysis.embeddedAssetBytes) {
+    for (const [name, dataUrl] of Object.entries(lastAnalysis.embeddedAssetBytes)) {
+      assets[name] = dataUrl;
+    }
+  }
+
+  setBusy("save", true);
+  try {
+    const res = await loggedFetch(`${BASE}/api/synthesis/save`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ templateId: id, layout: lastAnalysis.layout, assets }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(err.message || "Save failed");
+    }
+    const r = await res.json();
+    renderSaveResult(r);
+    logEntry("note",
+      `<span style="color:#7ec699">✓</span> Saved template <code>${escapeHtml(r.templateId)}</code>` +
+      ` — sample data + parameters generated, ${r.assets.length} asset(s) on disk`, []);
+    // Make the success obvious — toast + scroll the result into view.
+    showToast(`✓ Saved as ${r.templateId} — scroll down for JRXML and "Test this template"`);
+    document.getElementById("jrxmlBox").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    $("#jrxmlBox").innerHTML = `<div class="error-card"><strong>${escapeHtml(e.message)}</strong></div>`;
+    logEntry("err", "Save failed", [kv("message", e.message)]);
+    showToast("Save failed: " + e.message, "error");
+  } finally {
+    setBusy("save", false);
+  }
+});
+
+function renderSaveResult(r) {
+  const out = [];
+
+  // Success banner with deep link to the test page.
+  const url = `/?templateId=${encodeURIComponent(r.templateId)}&prefill=1`;
+  out.push(`<div class="success-card">
+    <strong>Template <code>${escapeHtml(r.templateId)}</code> saved.</strong><br>
+    <span style="font-size:12px;color:var(--muted)">JRXML: <code>${escapeHtml(r.jrxmlPath)}</code></span><br>
+    <a class="test-link" href="${url}" target="_blank" rel="noopener">⇒  Test this template ↗</a>
+  </div>`);
+
+  // Asset list with download links.
+  // Browsers can't attach X-Key-Id/X-Key-Secret headers to a plain <a href>
+  // click, so the click is intercepted: we fetch via the authed loggedFetch,
+  // turn the response into a Blob, then trigger a download.
+  if (r.assets?.length) {
+    out.push(`<div style="font-size:12px;font-weight:600;margin-top:14px">Assets stored for this template</div>`);
+    out.push(`<ul style="font-size:12px;margin:6px 0 0;padding-left:18px">`);
+    for (const a of r.assets) {
+      const href = `/api/synthesis/${encodeURIComponent(r.templateId)}/assets/${encodeURIComponent(a)}`;
+      out.push(`<li><a href="#" class="asset-link"
+                          data-asset-url="${escapeHtml(href)}"
+                          data-asset-name="${escapeHtml(a)}">${escapeHtml(a)}</a> ↓</li>`);
+    }
+    out.push(`</ul>`);
+  }
+
+  // JRXML
+  out.push(`<details open style="margin-top:14px"><summary>JRXML (${r.jrxml.length} chars)</summary>
+    <textarea readonly style="min-height:160px;font-size:11.5px">${escapeHtml(r.jrxml)}</textarea>
+  </details>`);
+
+  // Sample data
+  out.push(`<details style="margin-top:8px"><summary>Generated sample data (JSON)</summary>
+    <textarea readonly style="min-height:120px;font-size:11.5px">${escapeHtml(r.sampleData || '')}</textarea>
+  </details>`);
+
+  // Sample params
+  out.push(`<details style="margin-top:8px"><summary>Generated sample parameters (JSON)</summary>
+    <textarea readonly style="min-height:80px;font-size:11.5px">${escapeHtml(r.sampleParameters || '')}</textarea>
+  </details>`);
+
+  $("#jrxmlBox").innerHTML = out.join("");
+
+  // Authenticated download for each asset link.
+  $("#jrxmlBox").querySelectorAll("a.asset-link").forEach(link => {
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const url  = link.dataset.assetUrl;
+      const name = link.dataset.assetName;
+      try {
+        const res = await loggedFetch(BASE + url);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ message: res.statusText }));
+          throw new Error(err.message || ("HTTP " + res.status));
+        }
+        const blob = await res.blob();
+        const objUrl = URL.createObjectURL(blob);
+        const tmp = Object.assign(document.createElement("a"),
+                                  { href: objUrl, download: name });
+        tmp.click();
+        URL.revokeObjectURL(objUrl);
+        showToast(`Downloaded ${name}`);
+      } catch (err) {
+        showToast("Download failed: " + err.message, "error");
+        logEntry("err", `Asset download failed`, [kv("asset", name), kv("message", err.message)]);
+      }
+    });
+  });
+}
+
+// ====================================================================
+// busy state
+// ====================================================================
+function setBusy(which, busy) {
+  if (which === "analyze") {
+    $("#analyzeBtn").disabled = busy;
+    $("#analyzeLabel").textContent = busy ? "Analyzing…" : "Analyze";
+  } else {
+    $("#saveBtn").disabled = busy;
+    $("#saveLabel").textContent = busy ? "Saving…" : "Save as template";
+  }
+}
+
+// ====================================================================
+// Log controls
+// ====================================================================
+$("#clearLogBtn").addEventListener("click", () => {
+  $("#log").innerHTML = ""; logEntries = [];
+  $("#logCount").textContent = "0";
+});
+$("#copyLogBtn").addEventListener("click", () => {
+  const text = logEntries.join("");
+  navigator.clipboard.writeText(text).then(() => {
+    const b = $("#copyLogBtn"); const t = b.textContent;
+    b.textContent = "✓ Copied"; setTimeout(() => b.textContent = t, 1500);
+  });
+});
+</script>
+
+</body>
+</html>

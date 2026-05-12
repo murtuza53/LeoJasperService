@@ -1,0 +1,12 @@
+[
+  {"sku": "WID-001", "name": "Widget Pro",        "category": "Widgets",    "price": 299.00, "stock": 42},
+  {"sku": "WID-002", "name": "Widget Lite",       "category": "Widgets",    "price":  99.00, "stock": 120},
+  {"sku": "WID-003", "name": "Widget Plus",       "category": "Widgets",    "price": 399.00, "stock": 15},
+  {"sku": "GAD-001", "name": "Gadget X",          "category": "Gadgets",    "price": 249.00, "stock": 8},
+  {"sku": "GAD-002", "name": "Gadget Y",          "category": "Gadgets",    "price": 189.00, "stock": 0},
+  {"sku": "GAD-003", "name": "Gadget Z",          "category": "Gadgets",    "price": 299.00, "stock": 33},
+  {"sku": "DOO-001", "name": "Doohickey 3000",    "category": "Doohickeys", "price":  59.00, "stock": 75},
+  {"sku": "DOO-002", "name": "Doohickey Mini",    "category": "Doohickeys", "price":  29.00, "stock": 200},
+  {"sku": "TOO-001", "name": "Sonic Screwdriver", "category": "Tools",      "price": 159.00, "stock": 5},
+  {"sku": "TOO-002", "name": "Hyperspanner",      "category": "Tools",      "price": 219.00, "stock": 12}
+]

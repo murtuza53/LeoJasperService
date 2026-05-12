@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="employee-directory" pageWidth="595" pageHeight="842" columnWidth="535"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30">
+
+    <field name="name"       class="java.lang.String"/>
+    <field name="department" class="java.lang.String"/>
+    <field name="title"      class="java.lang.String"/>
+    <field name="email"      class="java.lang.String"/>
+    <field name="phone"      class="java.lang.String"/>
+
+    <variable name="deptCount" class="java.lang.Integer"
+              resetType="Group" resetGroup="dept" calculation="Count">
+        <variableExpression><![CDATA[$F{name}]]></variableExpression>
+    </variable>
+
+    <group name="dept">
+        <groupExpression><![CDATA[$F{department}]]></groupExpression>
+        <groupHeader>
+            <band height="28">
+                <textField>
+                    <reportElement x="0" y="6" width="535" height="20"
+                                   backcolor="#1F3A5F" forecolor="#FFFFFF" mode="Opaque"/>
+                    <textElement verticalAlignment="Middle">
+                        <font size="13" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA["  " + $F{department}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="20">
+                <textField>
+                    <reportElement x="0" y="2" width="535" height="14"/>
+                    <textElement textAlignment="Right"><font size="9" isItalic="true"/></textElement>
+                    <textFieldExpression><![CDATA[$V{deptCount} + " employee(s)"]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <title>
+        <band height="40">
+            <staticText>
+                <reportElement x="0" y="0" width="535" height="30"/>
+                <textElement><font size="20" isBold="true"/></textElement>
+                <text><![CDATA[Employee Directory]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <detail>
+        <band height="36">
+            <textField>
+                <reportElement x="0" y="0" width="270" height="16"/>
+                <textElement><font size="12" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="16" width="270" height="14"/>
+                <textElement><font size="10" isItalic="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="270" y="0" width="265" height="16"/>
+                <textElement textAlignment="Right"><font size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="270" y="16" width="265" height="14"/>
+                <textElement textAlignment="Right"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="33" width="535" height="1" forecolor="#DDDDDD"/>
+            </line>
+        </band>
+    </detail>
+</jasperReport>

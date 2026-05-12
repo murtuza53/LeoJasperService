@@ -1,0 +1,31 @@
+{
+  "parameters": {
+    "document.number": "SQ-2026-0001",
+    "document.date":   "26/04/2026",
+    "document.dueDate":"11/05/2026",
+    "document.currency":"BHD",
+    "document.refNo":  "",
+    "document.lpoNo":  "",
+    "document.payTerms":"Chq",
+    "document.notes":  "",
+    "customer.code":   "C0002",
+    "customer.account":"Customer 2",
+    "customer.address":"",
+    "customer.trn":    "",
+    "customer.attentionTo":"",
+    "totals.subTotal":      46,
+    "totals.discount":      0,
+    "totals.amountExcVat":  46.0,
+    "totals.vatAmount":     4.6,
+    "totals.grandTotal":    50.6,
+    "totals.spelledAmountGrandTotal":"BHD FIFTY AND 600 FILS ONLY",
+    "audit.createdBy":  "",
+    "audit.createdOn":  "",
+    "audit.approvedBy": "",
+    "audit.approvedOn": "",
+    "audit.printedBy":  ""
+  },
+  "data": [
+    {"lineNumber":1,"description":"HIGH ANKLE SAFETY SHOES BLACK 40 SIZE","unit":"Prs","qty":2,"unitPrice":5.0,"discountPct":0.0,"netAmount":10.0,"vatPct":"10%","totalIncVat":11.0}
+  ]
+}

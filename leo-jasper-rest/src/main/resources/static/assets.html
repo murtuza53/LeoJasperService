@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoJasperService — assets</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📁</text></svg>">
+<style>
+  :root {
+    --fg:#1a1a1a; --muted:#6a6a6a; --bg:#fafafa; --card:#fff;
+    --border:#e2e2e2; --accent:#0066cc; --accent-hover:#0052a3;
+    --ok-bg:#e8f5ec; --ok-fg:#1f7a3a; --error-bg:#fff4f4; --error-fg:#b00020;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04);
+  }
+  *,*::before,*::after { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         color:var(--fg); background:var(--bg); }
+  header.top-nav {
+    background:var(--card); border-bottom:1px solid var(--border);
+    padding:14px 32px; display:flex; justify-content:space-between;
+    align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .brand { font-weight:600; font-size:16px; display:flex; gap:8px; align-items:center; }
+  nav.tabs { display:flex; gap:4px; flex-wrap:wrap; }
+  nav.tabs a {
+    padding:7px 12px; border-radius:6px; text-decoration:none;
+    color:var(--muted); font-size:14px;
+  }
+  nav.tabs a:hover { background:#f4f4f7; color:var(--fg); }
+  nav.tabs a.active { background:var(--accent); color:#fff; }
+  main { padding:24px 32px; max-width:1300px; margin:0 auto; }
+  .card {
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:22px; box-shadow:var(--shadow); margin-bottom:20px;
+  }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.04em;
+       color:var(--muted); margin:0 0 14px; font-weight:600; }
+  label { display:block; font-size:13px; font-weight:500; margin:14px 0 6px; }
+  input,select { width:100%; padding:8px 10px; border:1px solid var(--border);
+                 border-radius:6px; font:inherit; background:#fff; }
+  button.primary {
+    padding:10px 16px; background:var(--accent); color:#fff;
+    border:none; border-radius:7px; font:inherit; font-weight:500; cursor:pointer;
+  }
+  button.primary:hover { background:var(--accent-hover); }
+  button.primary:disabled { opacity:.55; cursor:wait; }
+  button.secondary {
+    padding:6px 10px; background:#fff; border:1px solid var(--border);
+    border-radius:6px; cursor:pointer; font:inherit; font-size:12.5px;
+  }
+  button.secondary:hover { background:#f4f4f7; }
+  button.danger {
+    padding:6px 10px; background:#fff; border:1px solid var(--error-fg);
+    color:var(--error-fg); border-radius:6px; cursor:pointer; font:inherit; font-size:12.5px;
+  }
+  button.danger:hover { background:var(--error-bg); }
+  .row-3 { display:grid; gap:14px; grid-template-columns:1fr 1fr 1fr; }
+  @media (max-width:780px) { .row-3 { grid-template-columns:1fr; } }
+  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px;
+          background:#ececf2; color:var(--fg); margin-left:6px; }
+  .banner { padding:10px 14px; border-radius:8px; font-size:14px;
+            border:1px solid; margin-bottom:14px; }
+  .banner.error { background:var(--error-bg); border-color:var(--error-fg); color:var(--error-fg); }
+  .banner.warn  { background:#fff8e1; border-color:#8a6d00; color:#8a6d00; }
+  .grid {
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    margin-top:14px;
+  }
+  .tile {
+    border:1px solid var(--border); border-radius:8px; padding:8px;
+    background:#fff; font-size:12px; display:flex; flex-direction:column; gap:6px;
+  }
+  .tile .thumb {
+    width:100%; height:120px; background:#f4f4f7; border-radius:6px;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .tile .thumb img { max-width:100%; max-height:100%; }
+  .tile .thumb.icon { font-size:36px; color:var(--muted); }
+  .tile .name { font-weight:500; word-break:break-all; }
+  .tile .meta { color:var(--muted); font-size:11px; }
+  .tile .row { display:flex; gap:6px; flex-wrap:wrap; }
+  table { border-collapse:collapse; width:100%; font-size:13px; margin-top:6px; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); }
+  th { background:#f9f9fb; font-size:12px; }
+  code { font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+         font-size:12px; background:#f4f4f7; padding:1px 5px; border-radius:3px; }
+  .toast {
+    position:fixed; bottom:24px; right:24px; padding:12px 18px;
+    background:var(--ok-fg); color:#fff; border-radius:8px; box-shadow:var(--shadow);
+    font-size:14px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:100;
+  }
+  .toast.show { opacity:1; }
+  .toast.error { background:var(--error-fg); }
+  details summary { cursor:pointer; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+
+<header class="top-nav">
+  <div class="brand">📁 LeoJasperService — assets</div>
+  <nav class="tabs">
+    <a href="/license.html">License &amp; companies</a>
+    <a href="/assets.html"   class="active">Assets</a>
+    <a href="/">Template tester</a>
+    <a href="/synthesis.html">Synthesis</a>
+    <a href="/help.html">API docs</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="card" id="picker">
+    <h2>Browse a company's assets</h2>
+    <div id="noKey" class="banner warn" style="display:none">
+      No license key in browser storage. Pick a company below to load its credentials,
+      or paste a key/secret pair from your client docs.
+    </div>
+    <div class="row-3">
+      <div>
+        <label>Company</label>
+        <select id="companySelect"><option value="">— loading —</option></select>
+      </div>
+      <div>
+        <label>X-Key-Id</label>
+        <input id="keyId" type="text">
+      </div>
+      <div>
+        <label>X-Key-Secret</label>
+        <input id="keySecret" type="password">
+      </div>
+    </div>
+    <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap">
+      <button class="primary" id="loadBtn" type="button">Load assets</button>
+      <button class="secondary" id="rememberBtn" type="button">Remember in this browser</button>
+      <button class="secondary" id="forgetBtn"   type="button">Forget</button>
+    </div>
+    <details style="margin-top:8px">
+      <summary>How does this work?</summary>
+      <p style="font-size:13px; color:var(--muted)">
+        This page calls <code>/api/assets</code> with <code>X-Key-Id</code> +
+        <code>X-Key-Secret</code> headers. The selector pulls credentials from
+        the admin's company list (admin login required) so you don't have to
+        paste them. Once stored, they live in <code>localStorage</code> until
+        you hit Forget.
+      </p>
+    </details>
+  </section>
+
+  <div id="bucketsArea" hidden>
+
+    <section class="card">
+      <h2>Upload to a bucket</h2>
+      <div class="row-3">
+        <div>
+          <label>Bucket</label>
+          <select id="upBucket">
+            <option value="images">images</option>
+            <option value="templates">templates</option>
+            <option value="data">data</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div>
+          <label>File</label>
+          <input id="upFile" type="file">
+        </div>
+        <div>
+          <label>Save as (optional, defaults to filename)</label>
+          <input id="upName" type="text" placeholder="logo.png">
+        </div>
+      </div>
+      <button class="primary" id="uploadBtn" type="button" style="margin-top:14px">Upload</button>
+    </section>
+
+    <section class="card">
+      <h2>Contents <span class="pill" id="totalCount">0</span></h2>
+      <div id="bucketsList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Trash <span class="pill" id="trashCount">0</span></h2>
+      <p style="font-size:13px; color:var(--muted); margin-top:0">
+        Soft-deleted items are kept here for the configured retention window
+        (default 30 days). Restore puts them back in their original bucket.
+      </p>
+      <div id="trashList">
+        <div style="color:var(--muted);font-size:13px">—</div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (q) => document.querySelector(q);
+const BASE = location.origin;
+
+function showToast(msg, level="ok") {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.toggle("error", level==="error");
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+function authHeaders() {
+  return {
+    "X-Key-Id":     $("#keyId").value.trim(),
+    "X-Key-Secret": $("#keySecret").value.trim(),
+  };
+}
+
+async function api(method, path, opts={}) {
+  const headers = Object.assign({}, authHeaders(), opts.headers || {});
+  const init = { method, headers, credentials:"include" };
+  if (opts.body !== undefined) init.body = opts.body;
+  const res = await fetch(BASE + path, init);
+  if (!res.ok) {
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
+      const err = await res.json().catch(()=>null);
+      throw new Error((err && err.message) || ("HTTP " + res.status));
+    }
+    throw new Error("HTTP " + res.status + ": " + await res.text());
+  }
+  if (res.status === 204) return null;
+  if (opts.raw) return res;
+  const ct = res.headers.get("content-type") || "";
+  return ct.includes("application/json") ? res.json() : res.text();
+}
+
+// localStorage cache
+const STORAGE_KEY = "leojasper.assets-creds";
+function saveCreds()    { localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  keyId: $("#keyId").value.trim(), keySecret: $("#keySecret").value.trim() })); }
+function loadCreds()    { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch { return null; } }
+function clearCreds()   { localStorage.removeItem(STORAGE_KEY); }
+
+// ---------- bootstrap ----------
+(async function () {
+  // Try to load companies via admin session — populates the dropdown.
+  try {
+    const list = await fetch(BASE + "/api/admin/companies", { credentials:"include" })
+                       .then(r => r.ok ? r.json() : []);
+    const sel = $("#companySelect");
+    sel.innerHTML = '<option value="">— pick a company —</option>';
+    for (const c of list) {
+      if (c.disabled) continue;
+      const opt = document.createElement("option");
+      opt.value = c.keyId;
+      opt.textContent = c.name + "  (" + c.keyId.slice(0,8) + "…)";
+      sel.appendChild(opt);
+    }
+  } catch {
+    $("#companySelect").innerHTML = '<option value="">(admin login required)</option>';
+  }
+
+  const cached = loadCreds();
+  if (cached) {
+    $("#keyId").value     = cached.keyId || "";
+    $("#keySecret").value = cached.keySecret || "";
+    if (cached.keyId && cached.keySecret) {
+      try { await refresh(); } catch (e) { /* show as banner below */ }
+    }
+  } else {
+    $("#noKey").style.display = "block";
+  }
+
+  $("#companySelect").addEventListener("change", () => {
+    $("#keyId").value = $("#companySelect").value;
+    $("#keySecret").value = "";
+    showToast("Paste the secret for this keyId — it isn't recoverable on the server", "ok");
+  });
+})();
+
+$("#loadBtn").addEventListener("click", async () => {
+  try { await refresh(); showToast("Loaded"); }
+  catch (e) { showToast(e.message, "error"); }
+});
+
+$("#rememberBtn").addEventListener("click", () => {
+  saveCreds();
+  showToast("Stored locally — Forget to clear");
+});
+
+$("#forgetBtn").addEventListener("click", () => {
+  clearCreds();
+  $("#keyId").value = ""; $("#keySecret").value = "";
+  $("#bucketsArea").hidden = true;
+  $("#noKey").style.display = "block";
+  showToast("Cleared");
+});
+
+async function refresh() {
+  const data = await api("GET", "/api/assets");
+  $("#noKey").style.display = "none";
+  $("#bucketsArea").hidden = false;
+  renderContents(data);
+  const trash = await api("GET", "/api/assets/_trash");
+  renderTrash(trash);
+}
+
+function renderContents(data) {
+  const root = $("#bucketsList");
+  let total = 0;
+  let html = "";
+  for (const [bucket, items] of Object.entries(data.contents || {})) {
+    total += items.length;
+    html += `<details open style="margin-top:10px">
+      <summary><strong>${escapeHtml(bucket)}</strong>
+        <span class="pill">${items.length}</span></summary>`;
+    if (!items.length) {
+      html += '<div style="color:var(--muted);font-size:13px;padding:8px 0">empty</div>';
+    } else {
+      html += '<div class="grid">';
+      for (const it of items) {
+        const ct = it.contentType || "application/octet-stream";
+        const isImg = ct.startsWith("image/");
+        const inlineUrl = `${BASE}/api/assets/${encodeURIComponent(bucket)}/${encodeURIComponent(it.name)}?inline=true`;
+        html += `<div class="tile">
+          <div class="thumb ${isImg ? "" : "icon"}">${
+            isImg
+              ? `<img src="${inlineUrl}" data-needs-auth="${inlineUrl}"/>`
+              : (ct.includes("xml") ? "📄" : ct.includes("json") ? "{ }" : ct.includes("csv") ? "🗒" : "📦")
+          }</div>
+          <div class="name">${escapeHtml(it.name)}</div>
+          <div class="meta">${(it.size || 0).toLocaleString()} B · ${escapeHtml(ct)}<br>
+            <code>${escapeHtml(bucket)}/${escapeHtml(it.name)}</code></div>
+          <div class="row">
+            <button class="secondary" data-act="copy"     data-bucket="${escapeHtml(bucket)}" data-name="${escapeHtml(it.name)}">Copy path</button>
+            <button class="secondary" data-act="download" data-bucket="${escapeHtml(bucket)}" data-name="${escapeHtml(it.name)}">Download</button>
+            <button class="danger"    data-act="delete"   data-bucket="${escapeHtml(bucket)}" data-name="${escapeHtml(it.name)}">Delete</button>
+          </div>
+        </div>`;
+      }
+      html += "</div>";
+    }
+    html += "</details>";
+  }
+  $("#totalCount").textContent = total;
+  root.innerHTML = html;
+  // Wire actions
+  root.querySelectorAll("button[data-act]").forEach(b => b.addEventListener("click", onAction));
+  // Image thumbnails — fetch with auth headers (browser <img> can't send custom headers)
+  root.querySelectorAll("img[data-needs-auth]").forEach(async (img) => {
+    try {
+      const res = await fetch(img.dataset.needsAuth, { headers: authHeaders() });
+      if (!res.ok) throw new Error("img " + res.status);
+      const blob = await res.blob();
+      img.src = URL.createObjectURL(blob);
+    } catch { img.replaceWith(Object.assign(document.createElement("div"), { className:"icon", innerHTML:"🖼" })); }
+    img.removeAttribute("data-needs-auth");
+  });
+}
+
+function renderTrash(items) {
+  $("#trashCount").textContent = items.length;
+  if (!items.length) {
+    $("#trashList").innerHTML = '<div style="color:var(--muted);font-size:13px">empty</div>';
+    return;
+  }
+  let html = `<table><thead><tr><th>file</th><th>bucket</th><th>deleted</th><th>size</th><th></th></tr></thead><tbody>`;
+  for (const t of items) {
+    html += `<tr>
+      <td><code>${escapeHtml(t.originalName)}</code></td>
+      <td>${escapeHtml(t.bucket)}</td>
+      <td style="font-size:12px;color:var(--muted)">${escapeHtml((t.deletedAt || "").replace("T"," ").slice(0,19))}</td>
+      <td>${(t.size||0).toLocaleString()} B</td>
+      <td><button class="secondary" data-act="restore" data-name="${escapeHtml(t.trashName)}">Restore</button></td>
+    </tr>`;
+  }
+  html += "</tbody></table>";
+  $("#trashList").innerHTML = html;
+  $("#trashList").querySelectorAll("button[data-act='restore']").forEach(b => b.addEventListener("click", async () => {
+    try {
+      await api("POST", `/api/assets/_trash/${encodeURIComponent(b.dataset.name)}/restore`);
+      showToast("Restored");
+      await refresh();
+    } catch (e) { showToast(e.message, "error"); }
+  }));
+}
+
+async function onAction(e) {
+  const btn = e.currentTarget;
+  const { act, bucket, name } = btn.dataset;
+  if (act === "copy") {
+    navigator.clipboard.writeText(`${bucket}/${name}`);
+    showToast("Path copied");
+  } else if (act === "download") {
+    try {
+      const res = await api("GET", `/api/assets/${encodeURIComponent(bucket)}/${encodeURIComponent(name)}`,
+                            { raw:true });
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"), { href:url, download:name }).click();
+      URL.revokeObjectURL(url);
+    } catch (e) { showToast(e.message, "error"); }
+  } else if (act === "delete") {
+    if (!confirm(`Soft-delete ${bucket}/${name}?`)) return;
+    try {
+      await api("DELETE", `/api/assets/${encodeURIComponent(bucket)}/${encodeURIComponent(name)}`);
+      showToast("Moved to trash");
+      await refresh();
+    } catch (e) { showToast(e.message, "error"); }
+  }
+}
+
+$("#uploadBtn").addEventListener("click", async () => {
+  const f = $("#upFile").files[0];
+  if (!f) { showToast("Pick a file", "error"); return; }
+  const bucket = $("#upBucket").value;
+  const name = ($("#upName").value.trim() || f.name).replace(/[\\/]/g, "");
+  const fd = new FormData(); fd.append("file", f);
+  try {
+    await api("POST", `/api/assets/${encodeURIComponent(bucket)}/${encodeURIComponent(name)}`,
+              { body: fd });
+    showToast("Uploaded");
+    $("#upFile").value = ""; $("#upName").value = "";
+    await refresh();
+  } catch (e) { showToast(e.message, "error"); }
+});
+</script>
+
+</body>
+</html>

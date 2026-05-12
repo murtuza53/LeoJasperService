@@ -1,0 +1,804 @@
+{
+  "templateId" : "tax-invoice",
+  "createdAt" : "2026-05-08T20:18:23.475388800Z",
+  "analyzer" : "gemini:gemini-2.5-flash",
+  "model" : {
+    "title" : "Tax Invoice",
+    "page" : {
+      "width" : 595,
+      "height" : 842,
+      "leftMargin" : 30,
+      "rightMargin" : 30,
+      "topMargin" : 30,
+      "bottomMargin" : 30
+    },
+    "parameters" : [ {
+      "name" : "INVOICE_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Invoice number",
+      "sampleValue" : "INV-2024-00892"
+    }, {
+      "name" : "INVOICE_DATE",
+      "type" : "java.lang.String",
+      "description" : "Invoice date",
+      "sampleValue" : "24 Oct 2023"
+    }, {
+      "name" : "TRN_NUMBER",
+      "type" : "java.lang.String",
+      "description" : "Tax Registration Number",
+      "sampleValue" : "100342981100003"
+    }, {
+      "name" : "SENDER_COMPANY_NAME",
+      "type" : "java.lang.String",
+      "description" : "Sender company name",
+      "sampleValue" : "Maimoon Trading Company W.L.L"
+    }, {
+      "name" : "SENDER_ADDRESS",
+      "type" : "java.lang.String",
+      "description" : "Sender company address",
+      "sampleValue" : "Office 402, Building 832, Road 12\nDiplomatic Area, Manama, Bahrain"
+    }, {
+      "name" : "SENDER_CR",
+      "type" : "java.lang.String",
+      "description" : "Sender Commercial Registration number",
+      "sampleValue" : "CR: 12938-1"
+    }, {
+      "name" : "CUSTOMER_COMPANY_NAME",
+      "type" : "java.lang.String",
+      "description" : "Customer company name",
+      "sampleValue" : "Al-Futtaim Logistics"
+    }, {
+      "name" : "CUSTOMER_ADDRESS",
+      "type" : "java.lang.String",
+      "description" : "Customer company address",
+      "sampleValue" : "Warehouse 14, Hidd Industrial Area\nKingdom of Bahrain"
+    }, {
+      "name" : "CUSTOMER_TRN",
+      "type" : "java.lang.String",
+      "description" : "Customer Tax Registration Number",
+      "sampleValue" : "TRN: 20003928100003"
+    }, {
+      "name" : "PAYMENT_TERM_1",
+      "type" : "java.lang.String",
+      "description" : "Payment term line 1",
+      "sampleValue" : "• Net 30 days from invoice date."
+    }, {
+      "name" : "PAYMENT_TERM_2",
+      "type" : "java.lang.String",
+      "description" : "Payment term line 2",
+      "sampleValue" : "• Please include Invoice No. in payment reference."
+    }, {
+      "name" : "PAYMENT_TERM_3",
+      "type" : "java.lang.String",
+      "description" : "Payment term line 3",
+      "sampleValue" : "• All bank charges are to be borne by the remitter."
+    }, {
+      "name" : "BANK_NAME",
+      "type" : "java.lang.String",
+      "description" : "Bank name",
+      "sampleValue" : "Bank: Bank of Bahrain and Kuwait (BBK)"
+    }, {
+      "name" : "BANK_ACCOUNT_NAME",
+      "type" : "java.lang.String",
+      "description" : "Bank account name",
+      "sampleValue" : "Account Name: Maimoon Trading Company W.L.L"
+    }, {
+      "name" : "BANK_IBAN",
+      "type" : "java.lang.String",
+      "description" : "Bank IBAN",
+      "sampleValue" : "IBAN: BH21 BBKB 0000 0012 9381 02"
+    }, {
+      "name" : "SUBTOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Subtotal amount",
+      "sampleValue" : "1095.000"
+    }, {
+      "name" : "TOTAL_VAT",
+      "type" : "java.lang.Double",
+      "description" : "Total VAT amount",
+      "sampleValue" : "109.500"
+    }, {
+      "name" : "GRAND_TOTAL",
+      "type" : "java.lang.Double",
+      "description" : "Grand total amount",
+      "sampleValue" : "1204.500"
+    }, {
+      "name" : "AMOUNT_IN_WORDS",
+      "type" : "java.lang.String",
+      "description" : "Grand total amount in words",
+      "sampleValue" : "Amount in Words: One Thousand Two Hundred and Four Bahraini Dinars and Five Hundred Fils Only."
+    } ],
+    "fields" : [ {
+      "name" : "description",
+      "type" : "java.lang.String",
+      "description" : "Line item description",
+      "sampleValue" : "Industrial Air Compressor (Model X-500)"
+    }, {
+      "name" : "quantity",
+      "type" : "java.lang.Integer",
+      "description" : "Line item quantity",
+      "sampleValue" : "2"
+    }, {
+      "name" : "unit_price",
+      "type" : "java.lang.Double",
+      "description" : "Line item unit price",
+      "sampleValue" : "450.000"
+    }, {
+      "name" : "vat_percentage",
+      "type" : "java.lang.String",
+      "description" : "Line item VAT percentage",
+      "sampleValue" : "10%"
+    }, {
+      "name" : "vat_amount",
+      "type" : "java.lang.Double",
+      "description" : "Line item VAT amount",
+      "sampleValue" : "90.000"
+    }, {
+      "name" : "total_bhd",
+      "type" : "java.lang.Double",
+      "description" : "Line item total in BHD",
+      "sampleValue" : "990.000"
+    } ],
+    "regions" : [ {
+      "band" : "TITLE",
+      "x" : 0,
+      "y" : 0,
+      "width" : 150,
+      "height" : 30,
+      "element" : {
+        "type" : "static_text",
+        "text" : "TAX INVOICE",
+        "style" : {
+          "fontSize" : 28,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "TITLE",
+      "x" : 0,
+      "y" : 35,
+      "width" : 150,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "فاتورة ضريبية",
+        "style" : {
+          "fontSize" : 14,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 350,
+      "y" : 0,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "INVOICE NO:",
+        "style" : {
+          "fontSize" : 10,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 430,
+      "y" : 0,
+      "width" : 105,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{INVOICE_NUMBER}",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 350,
+      "y" : 15,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "DATE:",
+        "style" : {
+          "fontSize" : 10,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 430,
+      "y" : 15,
+      "width" : 105,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{INVOICE_DATE}",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 350,
+      "y" : 30,
+      "width" : 80,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "TRN:",
+        "style" : {
+          "fontSize" : 10,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 430,
+      "y" : 30,
+      "width" : 105,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{TRN_NUMBER}",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 0,
+      "y" : 70,
+      "width" : 250,
+      "height" : 120,
+      "element" : {
+        "type" : "static_text",
+        "style" : {
+          "background" : "#FFFFFF",
+          "borderWidth" : 0.5,
+          "borderColor" : "#1F3A5F",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 15,
+      "y" : 75,
+      "width" : 100,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "FROM / من",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 15,
+      "y" : 95,
+      "width" : 220,
+      "height" : 20,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{SENDER_COMPANY_NAME}",
+        "style" : {
+          "fontSize" : 12,
+          "bold" : true
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 15,
+      "y" : 115,
+      "width" : 220,
+      "height" : 40,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{SENDER_ADDRESS}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 15,
+      "y" : 155,
+      "width" : 220,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{SENDER_CR}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 285,
+      "y" : 70,
+      "width" : 250,
+      "height" : 120,
+      "element" : {
+        "type" : "static_text",
+        "style" : {
+          "background" : "#FFFFFF",
+          "borderWidth" : 0.5,
+          "borderColor" : "#8A2BE2",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 300,
+      "y" : 75,
+      "width" : 100,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "BILL TO / فاتورة الى",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 300,
+      "y" : 95,
+      "width" : 220,
+      "height" : 20,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_COMPANY_NAME}",
+        "style" : {
+          "fontSize" : 12,
+          "bold" : true
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 300,
+      "y" : 115,
+      "width" : 220,
+      "height" : 40,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_ADDRESS}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "PAGE_HEADER",
+      "x" : 300,
+      "y" : 155,
+      "width" : 220,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{CUSTOMER_TRN}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 0,
+      "y" : 0,
+      "width" : 220,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "DESCRIPTION / الوصف",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Left",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 220,
+      "y" : 0,
+      "width" : 40,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "QTY",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Center",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 260,
+      "y" : 0,
+      "width" : 70,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "UNIT PRICE",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Right",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 330,
+      "y" : 0,
+      "width" : 50,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "VAT %",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Center",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 380,
+      "y" : 0,
+      "width" : 70,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "VAT AMT",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Right",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "COLUMN_HEADER",
+      "x" : 450,
+      "y" : 0,
+      "width" : 85,
+      "height" : 25,
+      "element" : {
+        "type" : "static_text",
+        "text" : "TOTAL (BHD)",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Right",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 0,
+      "width" : 200,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "PAYMENT TERMS / شروط الدفع",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 20,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PAYMENT_TERM_1}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 35,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PAYMENT_TERM_2}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 50,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{PAYMENT_TERM_3}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 80,
+      "width" : 200,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "BANK DETAILS / تفاصيل البنك",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 100,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{BANK_NAME}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 115,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{BANK_ACCOUNT_NAME}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 0,
+      "y" : 130,
+      "width" : 250,
+      "height" : 15,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{BANK_IBAN}",
+        "style" : {
+          "fontSize" : 10
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 285,
+      "y" : 0,
+      "width" : 250,
+      "height" : 70,
+      "element" : {
+        "type" : "static_text",
+        "style" : {
+          "background" : "#F4F6F9",
+          "borderWidth" : 0.5,
+          "borderColor" : "#BBBBBB",
+          "borderSides" : "top,right,bottom,left"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 295,
+      "y" : 5,
+      "width" : 130,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Subtotal / المجموع الفرعي",
+        "style" : {
+          "fontSize" : 10,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 435,
+      "y" : 5,
+      "width" : 90,
+      "height" : 20,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{SUBTOTAL}",
+        "pattern" : "#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 295,
+      "y" : 25,
+      "width" : 130,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Total VAT / إجمالي الضريبة",
+        "style" : {
+          "fontSize" : 10,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 435,
+      "y" : 25,
+      "width" : 90,
+      "height" : 20,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{TOTAL_VAT}",
+        "pattern" : "#,##0.000",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Right"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 295,
+      "y" : 45,
+      "width" : 130,
+      "height" : 20,
+      "element" : {
+        "type" : "static_text",
+        "text" : "TOTAL BHD / الإجمالي",
+        "style" : {
+          "fontSize" : 12,
+          "bold" : true,
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 435,
+      "y" : 45,
+      "width" : 90,
+      "height" : 20,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{GRAND_TOTAL}",
+        "pattern" : "#,##0.000",
+        "style" : {
+          "fontSize" : 18,
+          "bold" : true,
+          "alignment" : "Right",
+          "color" : "#1F3A5F"
+        }
+      }
+    }, {
+      "band" : "SUMMARY",
+      "x" : 285,
+      "y" : 80,
+      "width" : 250,
+      "height" : 30,
+      "element" : {
+        "type" : "text_field",
+        "expression" : "$P{AMOUNT_IN_WORDS}",
+        "style" : {
+          "fontSize" : 9,
+          "italic" : true,
+          "color" : "#666666"
+        }
+      }
+    }, {
+      "band" : "PAGE_FOOTER",
+      "x" : 350,
+      "y" : 0,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "Authorized Signatory",
+        "style" : {
+          "fontSize" : 10,
+          "bold" : true,
+          "alignment" : "Center"
+        }
+      }
+    }, {
+      "band" : "PAGE_FOOTER",
+      "x" : 350,
+      "y" : 15,
+      "width" : 150,
+      "height" : 15,
+      "element" : {
+        "type" : "static_text",
+        "text" : "التوقيع المعتمد",
+        "style" : {
+          "fontSize" : 10,
+          "alignment" : "Center"
+        }
+      }
+    } ],
+    "tableColumns" : [ {
+      "name" : "description",
+      "header" : "DESCRIPTION / الوصف",
+      "x" : 0,
+      "width" : 220,
+      "alignment" : "Left"
+    }, {
+      "name" : "quantity",
+      "header" : "QTY",
+      "x" : 220,
+      "width" : 40,
+      "alignment" : "Center"
+    }, {
+      "name" : "unit_price",
+      "header" : "UNIT PRICE",
+      "x" : 260,
+      "width" : 70,
+      "alignment" : "Right",
+      "pattern" : "#,##0.000"
+    }, {
+      "name" : "vat_percentage",
+      "header" : "VAT %",
+      "x" : 330,
+      "width" : 50,
+      "alignment" : "Center"
+    }, {
+      "name" : "vat_amount",
+      "header" : "VAT AMT",
+      "x" : 380,
+      "width" : 70,
+      "alignment" : "Right",
+      "pattern" : "#,##0.000"
+    }, {
+      "name" : "total_bhd",
+      "header" : "TOTAL (BHD)",
+      "x" : 450,
+      "width" : 85,
+      "alignment" : "Right",
+      "pattern" : "#,##0.000"
+    } ],
+    "tableStyle" : {
+      "cellBorderWidth" : 0.5,
+      "cellBorderColor" : "#BBBBBB",
+      "cellBorderSides" : "bottom",
+      "headerBorderWidth" : 0.5,
+      "headerBorderColor" : "#BBBBBB",
+      "headerBorderSides" : "bottom",
+      "headerBackground" : "#F4F6F9",
+      "headerForeground" : "#1F3A5F"
+    },
+    "assets" : [ ]
+  }
+}

@@ -1,0 +1,57 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: leo-jasper-rest
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 64MB
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+leojasper:
+  templates:
+    path: ./templates
+  jobs:
+    parallelism: 4
+    ttl: PT2H
+  cache: true
+  virtualizer: false
+  synthesis:
+    # Resolved by Spring at startup; if GEMINI_API_KEY isn't set, the empty default
+    # triggers the MockVisionAnalyzer fallback at runtime (no startup failure).
+    gemini-api-key: ${GEMINI_API_KEY:}
+    gemini-model: gemini-2.5-flash
+    assets-path: ./synthesis-assets
+  admin:
+    # Where everything lives: company asset folders (companies/<slug>-<keyId6>/)
+    # AND the encrypted vault (.leojasper/credentials.enc + companies.enc).
+    # Set this to a path OUTSIDE the install directory so a redeploy can't
+    # wipe the vault. Examples:
+    #   default-assets-root: D:\\leojasper-data
+    #   default-assets-root: /var/lib/leojasper
+    default-assets-root: ./assets
+    session-ttl: PT30M
+    trash-retention-days: 30
+    rate-limit:
+      requests-per-minute: 60
+      auth-lock-threshold: 5
+      auth-lock-minutes: 5
+
+logging:
+  level:
+    com.leojasper: INFO
+    net.sf.jasperreports: WARN

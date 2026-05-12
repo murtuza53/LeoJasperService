@@ -1,0 +1,15 @@
+{
+  "QUOTATION_NUMBER" : "QT-2024-0892",
+  "QUOTATION_DATE" : "24 Oct 2023",
+  "VALID_UNTIL_DATE" : "23 Nov 2023",
+  "CUSTOMER_NAME" : "Gulf Global Logistics W.L.L",
+  "CUSTOMER_ADDRESS" : "Building 452, Road 1204\nHidd Industrial Area, Kingdom of Bahrain",
+  "CUSTOMER_CR_TRN" : "CR No: 123456-01 | TRN: 200023901",
+  "SALES_PERSON_NAME" : "Ahmed Al-Sayed",
+  "SALES_PERSON_TITLE" : "Senior Sales Consultant",
+  "SALES_PERSON_EMAIL" : "sales@maimoon.bh",
+  "SALES_PERSON_MOBILE" : "+973 3344 5566",
+  "SUBTOTAL" : 3230.2,
+  "TOTAL_VAT" : 293.2,
+  "GRAND_TOTAL" : 3523.4
+}
